@@ -1,0 +1,392 @@
+---
+title: Installation
+description: Complete installation guide and project configuration for NearYou
+---
+
+This guide covers the complete installation process, project structure, and configuration options for NearYou.
+
+## System Requirements
+
+Before installing NearYou, ensure your system meets these requirements:
+
+<AccordionGroup>
+  <Accordion title="Operating System">
+    - macOS (for iOS development)
+    - Windows 10/11 (for Android development)
+    - Linux (for Android and web development)
+  </Accordion>
+  
+  <Accordion title="Development Tools">
+    - **Node.js**: Version 16 or higher
+    - **npm**: Version 7+ (comes with Node.js)
+    - **Git**: For version control
+    - **Expo CLI**: Installed automatically with the project
+  </Accordion>
+  
+  <Accordion title="Mobile Development (Optional)">
+    - **Xcode**: For iOS development (macOS only)
+    - **Android Studio**: For Android development (all platforms)
+    - **Expo Go**: Mobile app for testing ([iOS](https://apps.apple.com/app/expo-go/id982107779) | [Android](https://play.google.com/store/apps/details?id=host.exp.exponent))
+  </Accordion>
+</AccordionGroup>
+
+## Installation Steps
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the NearYou repository from GitHub:
+    
+    ```bash
+    git clone https://github.com/your-username/nearyou.git
+    cd nearyou
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Install all project dependencies:
+    
+    <CodeGroup>
+      ```bash npm
+      npm install
+      ```
+      
+      ```bash yarn
+      yarn install
+      ```
+    </CodeGroup>
+    
+    This installs the following key packages:
+    
+    <Tabs>
+      <Tab title="Core">
+        - **expo** (~54.0.20) - The Expo SDK
+        - **react** (19.1.0) - React library
+        - **react-native** (0.81.5) - React Native framework
+      </Tab>
+      
+      <Tab title="Navigation">
+        - **expo-router** (~6.0.13) - File-based routing
+        - **@react-navigation/native** (^7.1.8) - Navigation library
+        - **@react-navigation/bottom-tabs** (^7.4.0) - Tab navigation
+        - **react-native-screens** (~4.16.0) - Native screen components
+      </Tab>
+      
+      <Tab title="UI & Animation">
+        - **expo-image** (~3.0.10) - Optimized image component
+        - **@expo/vector-icons** (^15.0.3) - Icon library
+        - **react-native-reanimated** (~4.1.1) - Animation library
+        - **react-native-gesture-handler** (~2.28.0) - Gesture handling
+      </Tab>
+      
+      <Tab title="Utilities">
+        - **expo-haptics** (~15.0.7) - Haptic feedback
+        - **expo-constants** (~18.0.10) - App constants
+        - **expo-splash-screen** (~31.0.10) - Splash screen control
+        - **expo-status-bar** (~3.0.8) - Status bar styling
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Verify installation">
+    Verify that everything is installed correctly:
+    
+    ```bash
+    npx expo --version
+    ```
+    
+    You should see the Expo CLI version printed to the console.
+  </Step>
+</Steps>
+
+## Project Structure
+
+NearYou follows the Expo Router file-based routing structure:
+
+```
+nearyou/
+├── src/
+│   ├── app/                    # File-based routing directory
+│   │   ├── (tabs)/            # Tab-based navigation group
+│   │   │   ├── _layout.tsx    # Tab navigator layout
+│   │   │   ├── index.tsx      # Home screen
+│   │   │   └── explore.tsx    # Explore screen
+│   │   ├── _layout.tsx        # Root layout
+│   │   └── modal.tsx          # Modal screen example
+│   ├── components/            # Reusable components
+│   │   ├── ui/               # UI components
+│   │   │   ├── icon-symbol.tsx
+│   │   │   └── collapsible.tsx
+│   │   ├── themed-text.tsx
+│   │   ├── themed-view.tsx
+│   │   ├── parallax-scroll-view.tsx
+│   │   ├── hello-wave.tsx
+│   │   ├── haptic-tab.tsx
+│   │   └── external-link.tsx
+│   ├── constants/            # App constants
+│   │   └── theme.ts         # Theme configuration
+│   └── hooks/               # Custom React hooks
+│       ├── use-color-scheme.ts
+│       ├── use-color-scheme.web.ts
+│       └── use-theme-color.ts
+├── assets/                  # Static assets
+│   ├── images/             # Images and icons
+│   └── screenshots/        # App screenshots
+├── app.json               # Expo configuration
+├── package.json          # Dependencies and scripts
+└── tsconfig.json        # TypeScript configuration
+```
+
+## Configuration
+
+### App Configuration (app.json)
+
+The `app.json` file contains core app settings:
+
+```json app.json
+{
+  "expo": {
+    "name": "nearyou",
+    "slug": "nearyou",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "nearyou",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true
+  }
+}
+```
+
+<ParamField path="name" type="string" required>
+  The display name of your app
+</ParamField>
+
+<ParamField path="slug" type="string" required>
+  URL-friendly name used in Expo Go and updates
+</ParamField>
+
+<ParamField path="scheme" type="string">
+  Deep linking URL scheme (e.g., `nearyou://`)
+</ParamField>
+
+<ParamField path="newArchEnabled" type="boolean" default={false}>
+  Enables React Native's new architecture for improved performance
+</ParamField>
+
+### Platform-Specific Settings
+
+<Tabs>
+  <Tab title="iOS">
+    ```json app.json
+    "ios": {
+      "supportsTablet": true
+    }
+    ```
+    
+    The app supports both iPhone and iPad devices.
+  </Tab>
+  
+  <Tab title="Android">
+    ```json app.json
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
+      },
+      "edgeToEdgeEnabled": true
+    }
+    ```
+    
+    Includes adaptive icon support and edge-to-edge display.
+  </Tab>
+  
+  <Tab title="Web">
+    ```json app.json
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    }
+    ```
+    
+    Generates static files for web deployment.
+  </Tab>
+</Tabs>
+
+### Expo Plugins
+
+NearYou uses the following Expo plugins:
+
+<CodeGroup>
+```json Expo Router
+"plugins": [
+  "expo-router"
+]
+```
+
+```json Splash Screen
+[
+  "expo-splash-screen",
+  {
+    "image": "./assets/images/splash-icon.png",
+    "imageWidth": 200,
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  }
+]
+```
+</CodeGroup>
+
+### Experimental Features
+
+NearYou enables cutting-edge React and Expo features:
+
+```json app.json
+"experiments": {
+  "typedRoutes": true,
+  "reactCompiler": true
+}
+```
+
+- **typedRoutes**: Provides TypeScript types for your routes
+- **reactCompiler**: Enables the new React Compiler for automatic optimization
+
+## TypeScript Configuration
+
+The project uses TypeScript with path aliases configured in `tsconfig.json`:
+
+```typescript Example import
+import { ThemedText } from '@/components/themed-text';
+import { useThemeColor } from '@/hooks/use-theme-color';
+```
+
+The `@/` alias points to the `src/` directory for cleaner imports.
+
+## Development Server
+
+Start the development server with:
+
+```bash
+npx expo start
+```
+
+<Info>
+  The development server provides hot reloading, allowing you to see changes instantly without restarting the app.
+</Info>
+
+### Available Options
+
+When the dev server is running, you can use these keyboard shortcuts:
+
+| Key | Action |
+|-----|--------|
+| `a` | Open on Android |
+| `i` | Open on iOS simulator |
+| `w` | Open in web browser |
+| `r` | Reload app |
+| `m` | Toggle menu |
+| `j` | Open debugger |
+
+## Environment Setup
+
+### iOS Development
+
+<Steps>
+  <Step title="Install Xcode">
+    Download Xcode from the Mac App Store (macOS only).
+  </Step>
+  
+  <Step title="Install Command Line Tools">
+    ```bash
+    xcode-select --install
+    ```
+  </Step>
+  
+  <Step title="Install iOS Simulator">
+    Open Xcode, go to Preferences > Components, and install an iOS simulator.
+  </Step>
+</Steps>
+
+### Android Development
+
+<Steps>
+  <Step title="Install Android Studio">
+    Download and install [Android Studio](https://developer.android.com/studio).
+  </Step>
+  
+  <Step title="Configure Android SDK">
+    Open Android Studio, go to Settings > Android SDK, and install:
+    - Android SDK Platform
+    - Android SDK Build-Tools
+    - Android Emulator
+  </Step>
+  
+  <Step title="Set environment variables">
+    Add to your shell profile (`.bashrc`, `.zshrc`, etc.):
+    
+    ```bash
+    export ANDROID_HOME=$HOME/Library/Android/sdk
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
+    ```
+  </Step>
+  
+  <Step title="Create an emulator">
+    Open Android Studio > Device Manager > Create Device, and select a device profile.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Metro bundler won't start">
+    Try clearing the cache:
+    
+    ```bash
+    npx expo start --clear
+    ```
+  </Accordion>
+  
+  <Accordion title="Dependencies not installing">
+    Delete `node_modules` and lockfile, then reinstall:
+    
+    ```bash
+    rm -rf node_modules package-lock.json
+    npm install
+    ```
+  </Accordion>
+  
+  <Accordion title="iOS simulator not opening">
+    Ensure Xcode Command Line Tools are set correctly:
+    
+    ```bash
+    sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+    ```
+  </Accordion>
+  
+  <Accordion title="Android emulator not detected">
+    Verify Android SDK environment variables are set and emulator is running:
+    
+    ```bash
+    adb devices
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Start developing" icon="code" href="/development/project-structure">
+    Learn about the codebase structure and start building features
+  </Card>
+  
+  <Card title="Customize theming" icon="palette" href="/development/theming">
+    Configure colors, fonts, and UI components
+  </Card>
+  
+  <Card title="Add navigation" icon="map" href="/development/navigation">
+    Create new screens and navigation flows
+  </Card>
+  
+  <Card title="Deploy your app" icon="rocket" href="/guides/deployment">
+    Build and publish to iOS and Android
+  </Card>
+</CardGroup>

@@ -1,0 +1,305 @@
+---
+title: 'Project Structure'
+description: 'Understanding the NearYou project structure and directory organization'
+icon: 'folder-tree'
+---
+
+NearYou follows a file-based routing structure powered by Expo Router. This guide explains the organization of the codebase and how different parts work together.
+
+## Directory Overview
+
+The project is organized into several key directories under `src/`:
+
+```
+src/
+├── app/              # File-based routing (screens)
+├── components/       # Reusable React components
+├── constants/        # Theme, colors, and constants
+├── hooks/            # Custom React hooks
+└── scripts/          # Build and utility scripts
+```
+
+## App Directory
+
+The `app/` directory uses Expo Router's file-based routing system. Each file automatically becomes a route in your application.
+
+<Accordion title="Route Structure">
+
+### Main Layout
+
+**File:** `src/app/_layout.tsx`
+
+The root layout configures the navigation theme and sets up the main stack navigator:
+
+```tsx src/app/_layout.tsx
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  );
+}
+```
+
+Key features:
+- Automatic theme switching based on device settings
+- Stack navigation with tab and modal screens
+- Global status bar configuration
+
+### Tab Navigation
+
+**Directory:** `src/app/(tabs)/`
+
+The `(tabs)` directory contains the main tabbed navigation structure. Parentheses indicate a route group that doesn't add a path segment.
+
+**Routes:**
+- `index.tsx` - Home screen (accessed at `/`)
+- `explore.tsx` - Explore screen (accessed at `/explore`)
+- `_layout.tsx` - Tab navigation configuration
+
+### Modal Routes
+
+**File:** `src/app/modal.tsx`
+
+Modal screens are presented on top of the main navigation stack with a modal presentation style.
+
+</Accordion>
+
+## Components Directory
+
+Reusable components are organized by functionality:
+
+<Tabs>
+  <Tab title="Core Components">
+
+### ThemedText
+
+**File:** `src/components/themed-text.tsx`
+
+A text component that automatically adapts to light and dark themes:
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+
+<ThemedText type="title">Welcome!</ThemedText>
+<ThemedText type="subtitle">Section Title</ThemedText>
+<ThemedText type="link">Click here</ThemedText>
+```
+
+**Available types:**
+- `default` - Standard body text (16px)
+- `title` - Large heading (32px, bold)
+- `defaultSemiBold` - Semibold body text (16px)
+- `subtitle` - Section heading (20px, bold)
+- `link` - Link styled text
+
+### ThemedView
+
+**File:** `src/components/themed-view.tsx`
+
+A view container with automatic theme-aware background colors:
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+
+<ThemedView style={styles.container}>
+  {/* Content */}
+</ThemedView>
+```
+
+  </Tab>
+  <Tab title="Layout Components">
+
+### ParallaxScrollView
+
+**File:** `src/components/parallax-scroll-view.tsx`
+
+A scroll view with animated parallax header:
+
+```tsx
+import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { Image } from 'expo-image';
+
+<ParallaxScrollView
+  headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+  headerImage={
+    <Image
+      source={require('@assets/images/header.png')}
+      style={styles.headerImage}
+    />
+  }>
+  {/* Scrollable content */}
+</ParallaxScrollView>
+```
+
+Features:
+
+- 250px header height
+- Smooth parallax animation on scroll
+- Automatic theme-aware background
+- Scale and translate effects
+
+</Tab>
+  <Tab title="Interactive Components">
+
+### HapticTab
+
+**File:** `src/components/haptic-tab.tsx`
+
+Provides haptic feedback on iOS when pressing tab buttons:
+
+```tsx
+import { HapticTab } from '@/components/haptic-tab';
+
+<Tabs screenOptions={{ tabBarButton: HapticTab }}>
+  {/* Tab screens */}
+</Tabs>
+```
+
+### ExternalLink
+
+**File:** `src/components/external-link.tsx`
+
+Opens links in an in-app browser on native platforms:
+
+```tsx
+import { ExternalLink } from '@/components/external-link';
+
+<ExternalLink href="https://example.com">
+  <ThemedText type="link">Visit Website</ThemedText>
+</ExternalLink>
+```
+
+  </Tab>
+</Tabs>
+
+### UI Components
+
+**Directory:** `src/components/ui/`
+
+Specialized UI components:
+
+<CardGroup cols={2}>
+  <Card title="IconSymbol" icon="icons" href="#icon-symbol">
+    Cross-platform icon component using SF Symbols (iOS) and Material Icons (Android/Web)
+  </Card>
+  <Card title="Collapsible" icon="chevron-down" href="#collapsible">
+    Expandable/collapsible content sections
+  </Card>
+</CardGroup>
+
+## Constants Directory
+
+Application-wide constants and configuration:
+
+**File:** `src/constants/theme.ts`
+
+Contains color schemes and font definitions. See [Theme System](/development/theming) for details.
+
+## Hooks Directory
+
+Custom React hooks for common functionality:
+
+<AccordionGroup>
+  <Accordion title="useColorScheme">
+
+**File:** `src/hooks/use-color-scheme.ts`
+
+Detects the device color scheme:
+
+```tsx
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+function MyComponent() {
+  const colorScheme = useColorScheme(); // 'light' | 'dark'
+  // ...
+}
+```
+
+  </Accordion>
+  <Accordion title="useThemeColor">
+
+**File:** `src/hooks/use-theme-color.ts`
+
+Gets theme-specific colors with optional overrides:
+
+```tsx
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+function MyComponent() {
+  const backgroundColor = useThemeColor(
+    { light: '#fff', dark: '#000' },
+    'background'
+  );
+  // ...
+}
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Path Aliases
+
+The project uses TypeScript path aliases for clean imports:
+
+```tsx
+// Instead of:
+import { ThemedText } from '../../../components/themed-text';
+
+// Use:
+import { ThemedText } from '@/components/themed-text';
+import image from '@assets/images/logo.png';
+```
+
+**Configured aliases:**
+- `@/` → `src/`
+- `@assets/` → `assets/`
+
+## File Naming Conventions
+
+<Note>
+Follow these conventions for consistency:
+
+- **Components:** kebab-case (e.g., `themed-text.tsx`)
+- **Screens:** kebab-case (e.g., `index.tsx`, `explore.tsx`)
+- **Hooks:** kebab-case with `use-` prefix (e.g., `use-color-scheme.ts`)
+- **Constants:** kebab-case (e.g., `theme.ts`)
+- **Types:** PascalCase for interfaces and types
+</Note>
+
+## Key Dependencies
+
+The project relies on these core libraries:
+
+| Package | Purpose |
+|---------|----------|
+| `expo-router` | File-based navigation |
+| `react-native-reanimated` | Smooth animations |
+| `expo-haptics` | Haptic feedback |
+| `expo-symbols` | SF Symbols support |
+| `@expo/vector-icons` | Icon library |
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Theme System" icon="palette" href="/development/theming">
+    Learn about colors and theming
+  </Card>
+  <Card title="Navigation" icon="compass" href="/development/navigation">
+    Configure routes and navigation
+  </Card>
+  <Card title="Components" icon="cube" href="/development/components">
+    Explore available components
+  </Card>
+</CardGroup>

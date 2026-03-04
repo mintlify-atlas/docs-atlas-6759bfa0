@@ -1,0 +1,222 @@
+---
+title: Exploration Features
+description: Interactive features that enhance your local exploration experience
+---
+
+NearYou provides a rich set of exploration features designed to make discovering your city fun, engaging, and rewarding. From interactive maps to personalized recommendations, every feature is built to enhance your adventure.
+
+## Core Exploration Experience
+
+NearYou transforms everyday movement through your city into an exciting exploration adventure.
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Discovery" icon="bolt">
+    Discover new places as you move through your city in real-time
+  </Card>
+  <Card title="Personalized Suggestions" icon="sparkles">
+    Get place recommendations based on your interests and exploration history
+  </Card>
+  <Card title="Exploration Map" icon="map-location-dot">
+    Visualize your journey and see what you've discovered
+  </Card>
+  <Card title="Check-In System" icon="circle-check">
+    Mark places as visited and track your exploration progress
+  </Card>
+</CardGroup>
+
+## Navigation & Interface
+
+NearYou features an intuitive tab-based navigation built with Expo Router:
+
+### Home Tab
+
+Your exploration dashboard featuring:
+
+- **Nearby Places**: Discover locations close to your current position
+- **Quick Stats**: See your points, level, and recent achievements at a glance
+- **Daily Suggestions**: Get personalized place recommendations
+- **Active Challenges**: View and track your current exploration goals
+
+### Explore Tab
+
+Dive deeper into exploration with:
+
+- **Interactive Map**: Browse all discovered and undiscovered places
+- **Category Filters**: Find specific types of places (coming soon)
+- **Distance Controls**: Adjust your exploration radius
+- **Search Function**: Look for specific places by name or type
+
+<Note>
+The app uses file-based routing with Expo Router, providing smooth navigation and deep linking support across iOS, Android, and web platforms.
+</Note>
+
+## Check-In System
+
+When you visit a discovered place, use the check-in feature to:
+
+<Steps>
+  <Step title="Automatic Detection">
+    The app detects when you're near a discovered place and prompts you to check in.
+  </Step>
+
+  <Step title="Confirm Your Visit">
+    Tap the check-in button to confirm you're at the location. The app verifies your position to ensure accurate tracking.
+  </Step>
+
+  <Step title="Earn Your Reward">
+    Receive points immediately upon successful check-in. First-time visits earn bonus points!
+  </Step>
+
+  <Step title="Track Your History">
+    Your visit is recorded in your exploration history, contributing to achievements and statistics.
+  </Step>
+</Steps>
+
+## Interactive Features
+
+### Haptic Feedback
+
+NearYou uses haptic feedback to create a more engaging experience:
+
+- Subtle vibrations when discovering a new place
+- Tactile confirmation when checking in
+- Feedback when earning points or unlocking achievements
+- Enhanced tab navigation with haptic touch
+
+```typescript
+import * as Haptics from 'expo-haptics';
+
+// Example: Haptic feedback on check-in
+await Haptics.notificationAsync(
+  Haptics.NotificationFeedbackType.Success
+);
+```
+
+### Smooth Animations
+
+Built with React Native Reanimated for fluid interactions:
+
+- Parallax scroll effects on content pages
+- Smooth transitions between screens
+- Animated map markers and overlays
+- Gesture-based interactions
+
+<Info>
+NearYou uses `react-native-reanimated` and `react-native-gesture-handler` to deliver 60fps animations and natural gesture recognition.
+</Info>
+
+## Theming & Customization
+
+Explore in style with adaptive theming:
+
+### Light & Dark Mode
+
+The app automatically adapts to your device's appearance settings:
+
+- **Light Mode**: Clean, bright interface perfect for daytime exploration
+- **Dark Mode**: Eye-friendly dark theme for evening adventures
+- **Automatic Switching**: Seamlessly transitions based on system preferences
+
+### Themed Components
+
+All UI elements use theme-aware components:
+
+- `ThemedView`: Automatically adjusts background colors
+- `ThemedText`: Dynamic text colors for optimal readability
+- Custom color schemes for maps and overlays
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+
+<ThemedView style={styles.container}>
+  <ThemedText type="title">Discover Places Near You</ThemedText>
+</ThemedView>
+```
+
+## Cross-Platform Experience
+
+NearYou delivers a consistent exploration experience across all platforms:
+
+| Platform | Features | Performance |
+|----------|----------|-------------|
+| **iOS** | Full feature set with native SF Symbols | 60fps animations |
+| **Android** | Complete functionality with Material icons | Optimized for all devices |
+| **Web** | Progressive web app with responsive design | Desktop & mobile browsers |
+
+<Note>
+The app is built with Expo SDK 54 and React Native 0.81, utilizing the new architecture for improved performance and smaller bundle sizes.
+</Note>
+
+## Offline Support
+
+Explore even without connectivity:
+
+- Previously discovered places remain accessible offline
+- Check-ins are queued and synced when connection is restored
+- Map data is cached for recently viewed areas
+- Your exploration history is stored locally
+
+<Warning>
+Active place discovery requires an internet connection to fetch new locations and verify check-ins.
+</Warning>
+
+## Privacy & Data
+
+Your exploration data is yours:
+
+- All exploration history is stored locally on your device
+- Location data is only used for place discovery and check-ins
+- No tracking when the app is closed
+- Export your data at any time from settings
+- Delete your exploration history whenever you want
+
+## Best Practices for Explorers
+
+Get the most out of your exploration experience:
+
+<AccordionGroup>
+  <Accordion title="Optimize Battery Life" icon="battery-full">
+    - Use location services only when actively exploring
+    - Enable low-power mode for extended exploration sessions
+    - Close the app when not in use to save battery
+  </Accordion>
+
+  <Accordion title="Discover Efficiently" icon="route">
+    - Plan routes that include multiple nearby places
+    - Check your map before heading out
+    - Focus on categories you enjoy to maximize engagement
+  </Accordion>
+
+  <Accordion title="Track Your Progress" icon="chart-simple">
+    - Review your statistics regularly to spot patterns
+    - Set personal exploration goals
+    - Try exploring new neighborhoods each week
+  </Accordion>
+
+  <Accordion title="Stay Safe" icon="shield">
+    - Always be aware of your surroundings while exploring
+    - Visit places during appropriate hours
+    - Share your exploration plans with friends or family
+  </Accordion>
+</AccordionGroup>
+
+## Upcoming Features
+
+We're constantly improving the exploration experience:
+
+- 🗺️ **Advanced Filters**: Filter places by type, rating, and distance
+- 💬 **User Reviews**: Read and write reviews for places you've visited
+- 📸 **Photo Gallery**: Share photos from your explorations
+- 👥 **Social Features**: Connect with friends and explore together
+- 🌐 **Multi-Language**: Support for Spanish and English (and more!)
+- 🏆 **Achievement System**: Expanded badges and milestone tracking
+
+<CardGroup cols={2}>
+  <Card title="View API Reference" icon="code" href="/api/components/themed-view">
+    Explore the components and hooks that power NearYou
+  </Card>
+  <Card title="Development Guide" icon="hammer" href="/development/project-structure">
+    Learn how to customize and extend NearYou's features
+  </Card>
+</CardGroup>

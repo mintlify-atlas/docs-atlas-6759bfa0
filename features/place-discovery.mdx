@@ -1,0 +1,88 @@
+---
+title: Place Discovery
+description: Discover nearby places of interest with location-based exploration and interactive features
+---
+
+NearYou's place discovery system helps you find interesting locations around you, from restaurants and cafes to parks, museums, and hidden gems in your city.
+
+## How It Works
+
+The place discovery feature uses your device's location to show you nearby points of interest. As you explore your area, the app reveals new places for you to visit and experience.
+
+<CardGroup cols={2}>
+  <Card title="Location-Based" icon="location-dot">
+    Automatically detects your current location to show relevant nearby places
+  </Card>
+  <Card title="Interactive Maps" icon="map">
+    Browse places on an interactive map interface
+  </Card>
+  <Card title="Place Details" icon="circle-info">
+    View detailed information about each location
+  </Card>
+  <Card title="Exploration Radius" icon="circle">
+    Discover places within your preferred exploration distance
+  </Card>
+</CardGroup>
+
+## Discovering Places
+
+When you open NearYou, the app immediately begins searching for interesting places near your current location. The home screen displays nearby locations you haven't visited yet.
+
+<Steps>
+  <Step title="Enable Location Services">
+    Allow NearYou to access your device's location to discover nearby places.
+    
+    <Note>
+      Location permissions are required for the place discovery feature to work. Your location data stays on your device and is only used to find nearby places.
+    </Note>
+  </Step>
+
+  <Step title="Browse Nearby Places">
+    View a list or map of places near you. Each place shows key information like name, type, and distance from your current location.
+  </Step>
+
+  <Step title="View Place Details">
+    Tap on any place to see more information, including address, category, and what makes it interesting.
+  </Step>
+
+  <Step title="Start Exploring">
+    Visit the places you discover to earn points and unlock new achievements.
+  </Step>
+</Steps>
+
+## Place Categories
+
+NearYou helps you discover various types of locations:
+
+- **Food & Drink**: Restaurants, cafes, bars, and food trucks
+- **Culture**: Museums, galleries, theaters, and historic sites
+- **Nature**: Parks, gardens, trails, and outdoor spaces
+- **Shopping**: Local shops, markets, and boutiques
+- **Entertainment**: Venues, attractions, and activity centers
+- **Services**: Community centers, libraries, and public facilities
+
+<Info>
+Future updates will include advanced filtering by place type, allowing you to customize your discovery experience based on your interests.
+</Info>
+
+## Privacy & Permissions
+
+NearYou respects your privacy while providing location-based features:
+
+- Location data is processed locally on your device
+- Your exploration history is stored securely
+- You control when and how the app accesses your location
+- No location tracking when the app is closed (unless you opt-in)
+
+## Technical Implementation
+
+NearYou is built with:
+
+- **Expo Location API** for accessing device location
+- **React Native Maps** for interactive map views
+- **Supabase** for place data and real-time updates
+- **File-based routing** with Expo Router for seamless navigation
+
+<Card title="Next Steps" icon="arrow-right" href="/features/points-system">
+  Learn how to earn points and rewards by exploring new places
+</Card>

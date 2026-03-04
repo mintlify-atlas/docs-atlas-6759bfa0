@@ -1,0 +1,556 @@
+---
+title: Building
+description: Build NearYou for iOS, Android, and Web platforms using Expo
+icon: 'hammer'
+---
+
+## Overview
+
+NearYou uses Expo's build system to create production-ready apps for multiple platforms. This guide covers local development builds and production builds.
+
+## Prerequisites
+
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node-js">
+    Node.js 18+ required
+    
+    Check version: `node --version`
+  </Card>
+  
+  <Card title="Package Manager" icon="box">
+    npm or yarn installed
+    
+    Already configured in the project
+  </Card>
+  
+  <Card title="Expo CLI" icon="mobile">
+    Included via `expo@~54.0.20`
+    
+    No global install needed
+  </Card>
+  
+  <Card title="EAS CLI (Optional)" icon="cloud">
+    For cloud builds: `npm install -g eas-cli`
+    
+    Not required for local development
+  </Card>
+</CardGroup>
+
+## Development Scripts
+
+NearYou includes several npm scripts for development:
+
+```json package.json
+{
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "expo lint"
+  }
+}
+```
+
+## Local Development
+
+### Start Development Server
+
+<Tabs>
+  <Tab title="All Platforms">
+    Start the Expo development server and choose a platform:
+    
+    ```bash
+    npm start
+    ```
+    
+    This opens the Expo Developer Tools where you can:
+    - Press `i` for iOS simulator
+    - Press `a` for Android emulator
+    - Press `w` for web browser
+    - Scan QR code with Expo Go app
+  </Tab>
+  
+  <Tab title="Android">
+    Start directly on Android emulator or device:
+    
+    ```bash
+    npm run android
+    ```
+    
+    <Note>
+    Requires Android Studio and a running emulator, or a connected device with USB debugging enabled.
+    </Note>
+  </Tab>
+  
+  <Tab title="iOS">
+    Start directly on iOS simulator:
+    
+    ```bash
+    npm run ios
+    ```
+    
+    <Warning>
+    iOS builds only work on macOS with Xcode installed.
+    </Warning>
+  </Tab>
+  
+  <Tab title="Web">
+    Start in web browser:
+    
+    ```bash
+    npm run web
+    ```
+    
+    Opens `http://localhost:8081` in your default browser.
+  </Tab>
+</Tabs>
+
+### Development Features
+
+<CardGroup cols={2}>
+  <Card title="Fast Refresh" icon="rotate">
+    Automatically reloads when you save files. Changes appear instantly without losing app state.
+  </Card>
+  
+  <Card title="Error Overlay" icon="triangle-exclamation">
+    Red screen shows errors with stack traces. Click to jump to the source file.
+  </Card>
+  
+  <Card title="Developer Menu" icon="bars">
+    Shake device or press `Cmd+D` (iOS) / `Cmd+M` (Android) for debug options.
+  </Card>
+  
+  <Card title="Element Inspector" icon="magnifying-glass">
+    Press `Cmd+D` > "Toggle Element Inspector" to inspect component layout.
+  </Card>
+</CardGroup>
+
+### Clear Cache
+
+If you encounter strange issues, clear the Metro bundler cache:
+
+```bash
+npx expo start --clear
+```
+
+<Tip>
+Use `--clear` after installing new dependencies or changing native configuration.
+</Tip>
+
+## Platform-Specific Builds
+
+### iOS Build Setup
+
+<Steps>
+  <Step title="Install Xcode">
+    Download Xcode from the Mac App Store (macOS only)
+    
+    Minimum version: Xcode 14+
+  </Step>
+  
+  <Step title="Install iOS Simulator">
+    Open Xcode > Preferences > Components > Install iOS simulator versions
+  </Step>
+  
+  <Step title="Accept Xcode License">
+    ```bash
+    sudo xcodebuild -license accept
+    ```
+  </Step>
+  
+  <Step title="Install CocoaPods">
+    ```bash
+    sudo gem install cocoapods
+    ```
+  </Step>
+  
+  <Step title="Run Prebuild (if needed)">
+    Generate native iOS project:
+    ```bash
+    npx expo prebuild --platform ios
+    ```
+  </Step>
+</Steps>
+
+<Info>
+NearYou uses the New Architecture (`newArchEnabled: true`), which requires iOS 13.4 or higher.
+</Info>
+
+### Android Build Setup
+
+<Steps>
+  <Step title="Install Android Studio">
+    Download from [developer.android.com/studio](https://developer.android.com/studio)
+  </Step>
+  
+  <Step title="Install Android SDK">
+    Open Android Studio > More Actions > SDK Manager
+    
+    Install:
+    - Android SDK Platform 34 (minimum)
+    - Android SDK Build-Tools
+    - Android Emulator
+  </Step>
+  
+  <Step title="Set Environment Variables">
+    Add to `~/.bashrc` or `~/.zshrc`:
+    ```bash
+    export ANDROID_HOME=$HOME/Library/Android/sdk
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
+    ```
+  </Step>
+  
+  <Step title="Create Virtual Device">
+    Android Studio > Device Manager > Create Device
+    
+    Recommended: Pixel 6 with Android 13+
+  </Step>
+  
+  <Step title="Run Prebuild (if needed)">
+    Generate native Android project:
+    ```bash
+    npx expo prebuild --platform android
+    ```
+  </Step>
+</Steps>
+
+<Note>
+The Android configuration enables edge-to-edge UI (`edgeToEdgeEnabled: true`), requiring Android API 31+.
+</Note>
+
+### Web Build
+
+Web builds work without additional setup:
+
+```bash
+npm run web
+```
+
+The web configuration uses static output:
+
+```json app.json
+{
+  "web": {
+    "output": "static",
+    "favicon": "./assets/images/favicon.png"
+  }
+}
+```
+
+## Production Builds
+
+### Using EAS Build (Recommended)
+
+Expo Application Services (EAS) provides cloud-based builds:
+
+<Steps>
+  <Step title="Install EAS CLI">
+    ```bash
+    npm install -g eas-cli
+    ```
+  </Step>
+  
+  <Step title="Login to Expo">
+    ```bash
+    eas login
+    ```
+  </Step>
+  
+  <Step title="Configure EAS">
+    ```bash
+    eas build:configure
+    ```
+    
+    This creates `eas.json` with build profiles.
+  </Step>
+  
+  <Step title="Build for Platform">
+    <CodeGroup>
+    ```bash iOS
+    eas build --platform ios
+    ```
+    
+    ```bash Android
+    eas build --platform android
+    ```
+    
+    ```bash All Platforms
+    eas build --platform all
+    ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+<Tip>
+EAS Build handles signing, native dependencies, and produces app store-ready artifacts automatically.
+</Tip>
+
+### Build Profiles
+
+Typical `eas.json` configuration:
+
+```json eas.json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  }
+}
+```
+
+<AccordionGroup>
+  <Accordion title="Development Profile" icon="code">
+    For development builds with debug features:
+    - Includes dev menu
+    - Enables fast refresh
+    - Internal distribution only
+  </Accordion>
+  
+  <Accordion title="Preview Profile" icon="eye">
+    For testing before production:
+    - Internal distribution
+    - APK format for Android (easier sharing)
+    - Production-like build
+  </Accordion>
+  
+  <Accordion title="Production Profile" icon="rocket">
+    For app store submission:
+    - Auto-increments build number
+    - Optimized and minified
+    - Store-ready artifacts
+  </Accordion>
+</AccordionGroup>
+
+### Local Production Build
+
+Build locally without EAS (requires native toolchains):
+
+<Tabs>
+  <Tab title="iOS">
+    ```bash
+    # Generate native projects
+    npx expo prebuild
+    
+    # Build with Xcode
+    cd ios
+    xcodebuild -workspace nearyou.xcworkspace \
+      -scheme nearyou \
+      -configuration Release \
+      -archivePath nearyou.xcarchive \
+      archive
+    ```
+  </Tab>
+  
+  <Tab title="Android">
+    ```bash
+    # Generate native projects
+    npx expo prebuild
+    
+    # Build APK
+    cd android
+    ./gradlew assembleRelease
+    
+    # Build AAB (for Play Store)
+    ./gradlew bundleRelease
+    ```
+    
+    Output location:
+    - APK: `android/app/build/outputs/apk/release/app-release.apk`
+    - AAB: `android/app/build/outputs/bundle/release/app-release.aab`
+  </Tab>
+  
+  <Tab title="Web">
+    ```bash
+    # Export static website
+    npx expo export:web
+    ```
+    
+    Output in `web-build/` directory, ready for static hosting.
+  </Tab>
+</Tabs>
+
+<Warning>
+Local builds require proper signing credentials (certificates for iOS, keystore for Android).
+</Warning>
+
+## Key Dependencies
+
+NearYou uses these core dependencies (from `package.json`):
+
+```json
+{
+  "dependencies": {
+    "expo": "~54.0.20",
+    "expo-router": "~6.0.13",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-reanimated": "~4.1.1",
+    "react-native-gesture-handler": "~2.28.0"
+  }
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="Expo SDK 54" icon="mobile">
+    Latest Expo features with React Native 0.81
+  </Card>
+  
+  <Card title="Expo Router 6" icon="route">
+    File-based routing with type safety
+  </Card>
+  
+  <Card title="React 19" icon="react">
+    Latest React with compiler support
+  </Card>
+  
+  <Card title="Reanimated 4" icon="play">
+    Smooth 60fps animations
+  </Card>
+</CardGroup>
+
+## Build Optimization
+
+### Bundle Size Optimization
+
+<Steps>
+  <Step title="Enable Hermes">
+    Hermes JavaScript engine is enabled by default in Expo 54 for better performance.
+  </Step>
+  
+  <Step title="Tree Shaking">
+    Import only what you need:
+    ```typescript
+    // Good
+    import { View } from 'react-native';
+    
+    // Avoid
+    import * as RN from 'react-native';
+    ```
+  </Step>
+  
+  <Step title="Analyze Bundle">
+    ```bash
+    npx expo export --dump-sourcemap
+    npx react-native-bundle-visualizer
+    ```
+  </Step>
+</Steps>
+
+### Performance Features
+
+NearYou enables several performance optimizations:
+
+```json app.json
+{
+  "newArchEnabled": true,
+  "experiments": {
+    "reactCompiler": true
+  }
+}
+```
+
+- **New Architecture**: Better interop between JS and native code
+- **React Compiler**: Automatic memoization and optimization
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Metro bundler port in use" icon="network-wired">
+    Kill existing Metro process:
+    ```bash
+    lsof -ti:8081 | xargs kill -9
+    npx expo start
+    ```
+  </Accordion>
+  
+  <Accordion title="iOS build fails" icon="apple">
+    Clean and rebuild:
+    ```bash
+    cd ios
+    pod deintegrate
+    pod install
+    cd ..
+    npx expo start --clear
+    ```
+  </Accordion>
+  
+  <Accordion title="Android build fails" icon="android">
+    Clean Gradle cache:
+    ```bash
+    cd android
+    ./gradlew clean
+    cd ..
+    npx expo start --clear
+    ```
+  </Accordion>
+  
+  <Accordion title="Module not found" icon="file-circle-xmark">
+    Reinstall dependencies:
+    ```bash
+    rm -rf node_modules package-lock.json
+    npm install
+    npx expo start --clear
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Code Quality
+
+### Linting
+
+Run ESLint to check code quality:
+
+```bash
+npm run lint
+```
+
+The project uses `eslint-config-expo` with flat config:
+
+```javascript eslint.config.js
+const { defineConfig } = require('eslint/config');
+const expoConfig = require('eslint-config-expo/flat');
+
+module.exports = defineConfig([
+  expoConfig,
+  {
+    ignores: ['dist/*'],
+  },
+]);
+```
+
+### Type Checking
+
+Run TypeScript compiler:
+
+```bash
+npx tsc --noEmit
+```
+
+<Tip>
+Add this as a pre-commit hook or CI check to catch errors early.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Customize app.json and platform settings
+  </Card>
+  
+  <Card title="Deployment" icon="rocket" href="/guides/deployment">
+    Deploy your built app to stores and web hosting
+  </Card>
+</CardGroup>

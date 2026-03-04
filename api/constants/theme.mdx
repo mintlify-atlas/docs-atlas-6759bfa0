@@ -1,0 +1,248 @@
+---
+title: Fonts
+description: Platform-specific font family constants for iOS, Android, and Web
+---
+
+## Overview
+
+The `Fonts` constant provides platform-specific font families that adapt automatically based on the runtime environment. It uses React Native's `Platform.select()` to deliver optimized font stacks for iOS, Android, and Web platforms.
+
+## Import
+
+```typescript
+import { Fonts } from '@/constants/theme';
+```
+
+## Font Families
+
+### iOS Fonts
+
+On iOS, the fonts map to native `UIFontDescriptor` system designs:
+
+<ResponseField name="sans" type="string" default="system-ui">
+  iOS `UIFontDescriptorSystemDesignDefault` - Default system font
+</ResponseField>
+
+<ResponseField name="serif" type="string" default="ui-serif">
+  iOS `UIFontDescriptorSystemDesignSerif` - Serif system font
+</ResponseField>
+
+<ResponseField name="rounded" type="string" default="ui-rounded">
+  iOS `UIFontDescriptorSystemDesignRounded` - Rounded system font (SF Pro Rounded)
+</ResponseField>
+
+<ResponseField name="mono" type="string" default="ui-monospace">
+  iOS `UIFontDescriptorSystemDesignMonospaced` - Monospaced system font
+</ResponseField>
+
+### Android/Default Fonts
+
+On Android and other platforms, fonts use standard CSS font family values:
+
+<ResponseField name="sans" type="string" default="normal">
+  Default sans-serif font
+</ResponseField>
+
+<ResponseField name="serif" type="string" default="serif">
+  Default serif font
+</ResponseField>
+
+<ResponseField name="rounded" type="string" default="normal">
+  Falls back to default font (no native rounded font on Android)
+</ResponseField>
+
+<ResponseField name="mono" type="string" default="monospace">
+  Default monospaced font
+</ResponseField>
+
+### Web Fonts
+
+On web platforms, fonts use comprehensive fallback stacks:
+
+<ResponseField name="sans" type="string" default="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  System font stack for sans-serif text
+</ResponseField>
+
+<ResponseField name="serif" type="string" default="Georgia, 'Times New Roman', serif">
+  Classic serif font stack
+</ResponseField>
+
+<ResponseField name="rounded" type="string" default="'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif">
+  Rounded font stack with Japanese font support
+</ResponseField>
+
+<ResponseField name="mono" type="string" default="SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace">
+  Developer-friendly monospace font stack
+</ResponseField>
+
+## Usage Examples
+
+### Basic Usage
+
+Use fonts in your StyleSheet definitions:
+
+```typescript
+import { StyleSheet, Text } from 'react-native';
+import { Fonts } from '@/constants/theme';
+
+const styles = StyleSheet.create({
+  title: {
+    fontFamily: Fonts.sans,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  code: {
+    fontFamily: Fonts.mono,
+    fontSize: 14,
+    backgroundColor: '#f5f5f5',
+    padding: 4,
+  },
+  subtitle: {
+    fontFamily: Fonts.serif,
+    fontSize: 18,
+    fontStyle: 'italic',
+  },
+});
+
+function MyComponent() {
+  return (
+    <>
+      <Text style={styles.title}>Welcome to NearYou</Text>
+      <Text style={styles.subtitle}>Discover what's around you</Text>
+      <Text style={styles.code}>const greeting = "Hello World";</Text>
+    </>
+  );
+}
+```
+
+### Inline Styles
+
+```typescript
+import { Text } from 'react-native';
+import { Fonts } from '@/constants/theme';
+
+function InlineExample() {
+  return (
+    <Text style={{ fontFamily: Fonts.rounded, fontSize: 16 }}>
+      This text uses the rounded font family
+    </Text>
+  );
+}
+```
+
+### Platform-Specific Styling
+
+Combine with Platform-specific styles for fine-grained control:
+
+```typescript
+import { Platform, StyleSheet, Text } from 'react-native';
+import { Fonts } from '@/constants/theme';
+
+const styles = StyleSheet.create({
+  heading: {
+    fontFamily: Fonts.sans,
+    fontSize: Platform.select({
+      ios: 28,
+      android: 26,
+      web: 32,
+    }),
+    fontWeight: Platform.select({
+      ios: '700',
+      android: 'bold',
+      web: '600',
+    }),
+  },
+});
+```
+
+### Typography System
+
+Create a reusable typography system:
+
+```typescript
+import { TextStyle } from 'react-native';
+import { Fonts } from '@/constants/theme';
+
+const typography = {
+  h1: {
+    fontFamily: Fonts.sans,
+    fontSize: 32,
+    fontWeight: 'bold',
+    lineHeight: 40,
+  } as TextStyle,
+  h2: {
+    fontFamily: Fonts.sans,
+    fontSize: 24,
+    fontWeight: '600',
+    lineHeight: 32,
+  } as TextStyle,
+  body: {
+    fontFamily: Fonts.sans,
+    fontSize: 16,
+    lineHeight: 24,
+  } as TextStyle,
+  code: {
+    fontFamily: Fonts.mono,
+    fontSize: 14,
+    lineHeight: 20,
+  } as TextStyle,
+};
+
+export default typography;
+```
+
+## Type Definition
+
+```typescript
+import { Platform } from 'react-native';
+
+export const Fonts: {
+  sans: string;
+  serif: string;
+  rounded: string;
+  mono: string;
+};
+```
+
+The actual value of `Fonts` is determined at runtime based on the platform using `Platform.select()`.
+
+## Best Practices
+
+<Card title="Use Consistent Font Families" icon="font">
+  Stick to the four provided font families (sans, serif, rounded, mono) throughout your app for visual consistency.
+</Card>
+
+<Card title="Test Across Platforms" icon="mobile">
+  Font rendering can vary significantly between iOS, Android, and Web. Always test your text styles on all target platforms.
+</Card>
+
+<Card title="Combine with Font Weights" icon="weight-hanging">
+  Use `fontWeight` in combination with font families for proper typographic hierarchy.
+</Card>
+
+<Card title="Consider Accessibility" icon="universal-access">
+  Ensure your font sizes and line heights maintain readability. Minimum recommended font size is 14px for body text.
+</Card>
+
+## Platform Notes
+
+### iOS
+- Uses native SF Pro font family
+- `rounded` provides the beautiful SF Pro Rounded
+- All system fonts support Dynamic Type
+
+### Android
+- Uses Roboto as the default system font
+- `rounded` falls back to normal since Android doesn't have a native rounded font
+- Consider using custom fonts if you need rounded typography on Android
+
+### Web
+- Provides comprehensive fallback stacks
+- System fonts load instantly without font file downloads
+- Ensures consistent rendering across browsers
+
+## Related
+
+- [Colors](/api/constants/colors) - Theme-aware color constants
+- [Theming Guide](/development/theming) - Best practices for text styling
+- [Platform Module](https://reactnative.dev/docs/platform) - React Native Platform API

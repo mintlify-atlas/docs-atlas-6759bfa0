@@ -1,0 +1,132 @@
+---
+title: ThemedView
+description: A View component that automatically adapts its background color based on the current theme (light/dark mode)
+---
+
+## Overview
+
+`ThemedView` is a wrapper around React Native's `View` component that provides automatic theme-aware background colors. It adapts its background color based on the current color scheme (light or dark mode) while accepting all standard View props.
+
+## Import
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+```
+
+## Props
+
+`ThemedView` extends all standard React Native `ViewProps` and adds the following theme-specific props:
+
+<ParamField path="lightColor" type="string" optional>
+  Custom background color to use in light mode. If not provided, uses the default theme background color.
+</ParamField>
+
+<ParamField path="darkColor" type="string" optional>
+  Custom background color to use in dark mode. If not provided, uses the default theme background color.
+</ParamField>
+
+<ParamField path="style" type="ViewStyle" optional>
+  Standard React Native style prop. Background colors from theme are applied first, then merged with this style.
+</ParamField>
+
+## Usage Examples
+
+### Basic Usage
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+
+export default function ModalScreen() {
+  return (
+    <ThemedView style={styles.container}>
+      <ThemedText type="title">This is a modal</ThemedText>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+});
+```
+
+### With Custom Theme Colors
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+
+export default function HomeScreen() {
+  return (
+    <ThemedView 
+      style={styles.titleContainer}
+      lightColor="#A1CEDC"
+      darkColor="#1D3D47"
+    >
+      {/* Content */}
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+});
+```
+
+### Nested Layout Structure
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+
+export default function HomeScreen() {
+  return (
+    <ThemedView style={styles.titleContainer}>
+      <ThemedText type="title">Welcome!</ThemedText>
+    </ThemedView>
+    <ThemedView style={styles.stepContainer}>
+      <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+      <ThemedText>
+        Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+      </ThemedText>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+});
+```
+
+## Implementation Details
+
+The component uses the `useThemeColor` hook to determine the appropriate background color based on:
+1. Custom `lightColor` or `darkColor` props if provided
+2. Default theme background color otherwise
+
+The background color is automatically applied and merged with any additional styles passed via the `style` prop.
+
+## Type Definition
+
+```tsx
+export type ThemedViewProps = ViewProps & {
+  lightColor?: string;
+  darkColor?: string;
+};
+```

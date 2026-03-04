@@ -1,0 +1,160 @@
+---
+title: ThemedText
+description: A Text component with automatic theme adaptation and predefined typography styles
+---
+
+## Overview
+
+`ThemedText` is a wrapper around React Native's `Text` component that provides automatic theme-aware text colors and predefined typography styles. It supports multiple text types with different sizes, weights, and styling.
+
+## Import
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+```
+
+## Props
+
+`ThemedText` extends all standard React Native `TextProps` and adds the following props:
+
+<ParamField path="type" type="'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link'" default="default" optional>
+  The typography style to apply:
+  - `default`: Regular text (16px, line height 24)
+  - `title`: Large bold text (32px, bold, line height 32)
+  - `defaultSemiBold`: Semi-bold text (16px, weight 600, line height 24)
+  - `subtitle`: Medium bold text (20px, bold)
+  - `link`: Link-styled text (16px, line height 30, color #0a7ea4)
+</ParamField>
+
+<ParamField path="lightColor" type="string" optional>
+  Custom text color to use in light mode. If not provided, uses the default theme text color.
+</ParamField>
+
+<ParamField path="darkColor" type="string" optional>
+  Custom text color to use in dark mode. If not provided, uses the default theme text color.
+</ParamField>
+
+<ParamField path="style" type="TextStyle" optional>
+  Standard React Native style prop. Applied after theme and type styles.
+</ParamField>
+
+## Usage Examples
+
+### Basic Usage with Types
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+
+export default function HomeScreen() {
+  return (
+    <ThemedView>
+      <ThemedText type="title">Welcome!</ThemedText>
+      <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+      <ThemedText>
+        This is default text style.
+      </ThemedText>
+    </ThemedView>
+  );
+}
+```
+
+### Inline Text Styling
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+
+export default function Example() {
+  return (
+    <ThemedText>
+      Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+    </ThemedText>
+  );
+}
+```
+
+### Link Text
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+import { ExternalLink } from '@/components/external-link';
+
+export default function Example() {
+  return (
+    <ExternalLink href="https://docs.expo.dev/router/introduction">
+      <ThemedText type="link">Learn more</ThemedText>
+    </ExternalLink>
+  );
+}
+```
+
+### Platform-Specific Content
+
+```tsx
+import { Platform } from 'react-native';
+import { ThemedText } from '@/components/themed-text';
+
+export default function Example() {
+  return (
+    <ThemedText>
+      Press{' '}
+      <ThemedText type="defaultSemiBold">
+        {Platform.select({
+          ios: 'cmd + d',
+          android: 'cmd + m',
+          web: 'F12',
+        })}
+      </ThemedText>{' '}
+      to open developer tools.
+    </ThemedText>
+  );
+}
+```
+
+### Custom Theme Colors
+
+```tsx
+import { ThemedText } from '@/components/themed-text';
+
+export default function Example() {
+  return (
+    <ThemedText 
+      type="title"
+      lightColor="#000000"
+      darkColor="#FFFFFF"
+    >
+      Custom colored title
+    </ThemedText>
+  );
+}
+```
+
+## Typography Styles
+
+The component provides the following predefined typography styles:
+
+| Type | Font Size | Line Height | Font Weight | Color |
+|------|-----------|-------------|-------------|-------|
+| `default` | 16px | 24 | normal | theme text color |
+| `defaultSemiBold` | 16px | 24 | 600 | theme text color |
+| `title` | 32px | 32 | bold | theme text color |
+| `subtitle` | 20px | - | bold | theme text color |
+| `link` | 16px | 30 | normal | #0a7ea4 |
+
+## Implementation Details
+
+The component:
+1. Uses the `useThemeColor` hook to determine text color based on theme
+2. Applies the selected typography style from predefined StyleSheet
+3. Merges theme color, type styles, and custom styles in order
+4. Passes all other props to the underlying Text component
+
+## Type Definition
+
+```tsx
+export type ThemedTextProps = TextProps & {
+  lightColor?: string;
+  darkColor?: string;
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+};
+```

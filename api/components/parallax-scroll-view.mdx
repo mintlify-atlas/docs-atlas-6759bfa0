@@ -1,0 +1,158 @@
+---
+title: ParallaxScrollView
+description: A scrollable view with an animated parallax header effect using React Native Reanimated
+---
+
+## Overview
+
+`ParallaxScrollView` is a scroll view component that creates a parallax effect on the header image. As the user scrolls, the header image translates and scales with smooth animations, providing an engaging visual experience.
+
+## Import
+
+```tsx
+import ParallaxScrollView from '@/components/parallax-scroll-view';
+```
+
+## Props
+
+<ParamField path="headerImage" type="ReactElement" required>
+  The React element to display in the header. This can be an Image, Icon, or any other component. The header has a fixed height of 250px.
+</ParamField>
+
+<ParamField path="headerBackgroundColor" type="{ dark: string; light: string }" required>
+  Background colors for the header in both light and dark modes. Must provide both `light` and `dark` color values.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  The content to display below the header. Wrapped in a ThemedView with padding and gap styling.
+</ParamField>
+
+## Usage Examples
+
+### With Image Header
+
+```tsx
+import { Image } from 'expo-image';
+import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { StyleSheet } from 'react-native';
+
+export default function HomeScreen() {
+  return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerImage={
+        <Image
+          source={require('@assets/images/partial-react-logo.png')}
+          style={styles.reactLogo}
+        />
+      }>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Welcome!</ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText>
+          Edit app/(tabs)/index.tsx to see changes.
+        </ThemedText>
+      </ThemedView>
+    </ParallaxScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+});
+```
+
+### With Icon Header
+
+```tsx
+import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Collapsible } from '@/components/ui/collapsible';
+import { StyleSheet } from 'react-native';
+
+export default function ExploreScreen() {
+  return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerImage={
+        <IconSymbol
+          size={310}
+          color="#808080"
+          name="chevron.left.forwardslash.chevron.right"
+          style={styles.headerImage}
+        />
+      }>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Explore</ThemedText>
+      </ThemedView>
+      <ThemedText>This app includes example code to help you get started.</ThemedText>
+      <Collapsible title="File-based routing">
+        <ThemedText>
+          This app has two screens: app/(tabs)/index.tsx and app/(tabs)/explore.tsx
+        </ThemedText>
+      </Collapsible>
+    </ParallaxScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  headerImage: {
+    color: '#808080',
+    bottom: -90,
+    left: -35,
+    position: 'absolute',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+});
+```
+
+## Animation Behavior
+
+The parallax effect applies two transformations to the header based on scroll position:
+
+1. **Translation**: As you scroll, the header image moves vertically:
+   - Scrolling up (negative offset): Header moves up at half speed
+   - Scrolling down (positive offset): Header moves down at 0.75x speed
+
+2. **Scale**: When scrolling up beyond the header, the image scales up to 2x for a zoom effect
+
+## Implementation Details
+
+- **Header Height**: Fixed at 250px
+- **Animation Library**: Uses `react-native-reanimated` for smooth 60fps animations
+- **Scroll Throttle**: Set to 16ms for optimal performance
+- **Content Styling**: Content area has 32px padding and 16px gap between children
+- **Theme Integration**: Uses `useThemeColor` and `useColorScheme` hooks for theme awareness
+
+## Type Definition
+
+```tsx
+type Props = PropsWithChildren<{
+  headerImage: ReactElement;
+  headerBackgroundColor: { dark: string; light: string };
+}>;
+```

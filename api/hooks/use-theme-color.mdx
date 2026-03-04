@@ -1,0 +1,216 @@
+---
+title: useThemeColor
+description: Hook for getting theme-aware colors based on the current color scheme
+---
+
+## Overview
+
+The `useThemeColor` hook automatically selects the appropriate color based on the current color scheme (light or dark mode). It allows you to override default theme colors or use colors from your theme configuration.
+
+## Import
+
+```typescript
+import { useThemeColor } from '@/hooks/use-theme-color';
+```
+
+## Usage
+
+### Using Default Theme Colors
+
+```tsx
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export function MyComponent() {
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+
+  return (
+    <View style={{ backgroundColor }}>
+      <Text style={{ color: textColor }}>Themed content</Text>
+    </View>
+  );
+}
+```
+
+### Custom Color Overrides
+
+From `src/components/themed-view.tsx`:
+
+```tsx
+import { View } from 'react-native';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export function ThemedView({ style, lightColor, darkColor, ...otherProps }) {
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'background'
+  );
+
+  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+```
+
+Using the component:
+
+```tsx
+<ThemedView lightColor="#fff" darkColor="#000">
+  <Text>Custom themed background</Text>
+</ThemedView>
+```
+
+### Text Styling
+
+From `src/components/themed-text.tsx`:
+
+```tsx
+import { Text } from 'react-native';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export function ThemedText({ style, lightColor, darkColor, ...rest }) {
+  const color = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'text'
+  );
+
+  return <Text style={[{ color }, style]} {...rest} />;
+}
+```
+
+### Background Color Only
+
+From `src/components/parallax-scroll-view.tsx`:
+
+```tsx
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export function ParallaxScrollView() {
+  const backgroundColor = useThemeColor({}, 'background');
+
+  return (
+    <Animated.ScrollView
+      style={{ backgroundColor }}
+    >
+      {/* Content */}
+    </Animated.ScrollView>
+  );
+}
+```
+
+## Parameters
+
+<ParamField path="props" type="object" required>
+  An object containing optional color overrides for light and dark modes.
+  
+  <Expandable title="properties">
+    <ParamField path="light" type="string">
+      Custom color to use in light mode. If provided, this overrides the default theme color.
+    </ParamField>
+    
+    <ParamField path="dark" type="string">
+      Custom color to use in dark mode. If provided, this overrides the default theme color.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="colorName" type="keyof Colors.light & keyof Colors.dark" required>
+  The name of the color from your theme configuration. Must exist in both light and dark theme objects.
+  
+  Available color names (based on `@/constants/theme`):
+  - `'text'` - Primary text color
+  - `'background'` - Background color
+  - `'tint'` - Tint/accent color
+  - `'icon'` - Icon color
+  - `'tabIconDefault'` - Default tab icon color
+  - `'tabIconSelected'` - Selected tab icon color
+</ParamField>
+
+## Return Value
+
+Returns a `string` containing the hex color value appropriate for the current color scheme.
+
+## Type Definition
+
+```typescript
+import { Colors } from '@/constants/theme';
+
+function useThemeColor(
+  props: { light?: string; dark?: string },
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+): string;
+```
+
+## How It Works
+
+1. Detects the current color scheme using [`useColorScheme`](/api/hooks/use-color-scheme)
+2. Defaults to `'light'` if no scheme is detected
+3. Checks if a custom color override is provided for the current scheme
+4. Returns the custom color if provided, otherwise returns the color from the theme configuration
+
+## Theme Configuration
+
+The hook uses color definitions from `@/constants/theme`:
+
+```typescript
+export const Colors = {
+  light: {
+    text: '#11181C',
+    background: '#fff',
+    tint: '#0a7ea4',
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: '#0a7ea4',
+  },
+  dark: {
+    text: '#ECEDEE',
+    background: '#151718',
+    tint: '#fff',
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: '#fff',
+  },
+};
+```
+
+## Best Practices
+
+### Use Empty Object for Default Colors
+
+When you don't need custom overrides, pass an empty object:
+
+```tsx
+const color = useThemeColor({}, 'text');
+```
+
+### Provide Both Light and Dark Overrides
+
+When overriding colors, provide both light and dark values for consistency:
+
+```tsx
+const color = useThemeColor(
+  { light: '#fff', dark: '#000' },
+  'background'
+);
+```
+
+### Create Themed Components
+
+Use this hook to create reusable themed components:
+
+```tsx
+export function ThemedButton({ lightBg, darkBg, children }) {
+  const backgroundColor = useThemeColor(
+    { light: lightBg, dark: darkBg },
+    'tint'
+  );
+
+  return (
+    <TouchableOpacity style={{ backgroundColor }}>
+      {children}
+    </TouchableOpacity>
+  );
+}
+```
+
+## Related Hooks
+
+- [`useColorScheme`](/api/hooks/use-color-scheme) - Get the current color scheme preference

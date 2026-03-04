@@ -1,0 +1,362 @@
+---
+title: Configuration
+description: Configure your NearYou app with Expo settings, app.json, and environment options
+icon: 'gear'
+---
+
+## Overview
+
+NearYou uses Expo's configuration system to manage app settings across iOS, Android, and Web platforms. All core configuration is defined in `app.json` at the root of your project.
+
+## App Configuration
+
+### Basic Settings
+
+The main app configuration is defined in `app.json`:
+
+```json app.json
+{
+  "expo": {
+    "name": "nearyou",
+    "slug": "nearyou",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "nearyou",
+    "userInterfaceStyle": "automatic"
+  }
+}
+```
+
+<Note>
+The `scheme` field enables deep linking with the URL scheme `nearyou://`
+</Note>
+
+### Key Configuration Options
+
+<AccordionGroup>
+  <Accordion title="name" icon="tag">
+    The display name of your app. This appears on the home screen and in app stores.
+    
+    **Current value:** `nearyou`
+  </Accordion>
+
+  <Accordion title="slug" icon="link">
+    A URL-friendly identifier for your app. Used in Expo's services and URLs.
+    
+    **Current value:** `nearyou`
+  </Accordion>
+
+  <Accordion title="version" icon="code-branch">
+    The app version following semantic versioning (major.minor.patch).
+    
+    **Current value:** `1.0.0`
+  </Accordion>
+
+  <Accordion title="orientation" icon="mobile">
+    Locks the app to a specific orientation.
+    
+    **Options:** `portrait`, `landscape`, `default`
+    
+    **Current value:** `portrait`
+  </Accordion>
+
+  <Accordion title="userInterfaceStyle" icon="palette">
+    Controls dark mode support.
+    
+    **Options:** `light`, `dark`, `automatic`
+    
+    **Current value:** `automatic` (respects system settings)
+  </Accordion>
+</AccordionGroup>
+
+## Platform-Specific Configuration
+
+### iOS Configuration
+
+```json app.json
+{
+  "expo": {
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="iPad Support" icon="tablet">
+    The app is configured to run on both iPhone and iPad devices with `supportsTablet: true`.
+  </Card>
+  
+  <Card title="Additional Options" icon="ellipsis">
+    You can add `bundleIdentifier`, `buildNumber`, and other iOS-specific settings here.
+  </Card>
+</CardGroup>
+
+### Android Configuration
+
+```json app.json
+{
+  "expo": {
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    }
+  }
+}
+```
+
+#### Adaptive Icon
+
+Android adaptive icons consist of three layers:
+
+<Steps>
+  <Step title="Foreground Image">
+    The main icon graphic (`./assets/images/android-icon-foreground.png`)
+  </Step>
+  
+  <Step title="Background">
+    Either a solid color (`#E6F4FE`) or background image for depth
+  </Step>
+  
+  <Step title="Monochrome">
+    Single-color version for themed icons on Android 13+ (`./assets/images/android-icon-monochrome.png`)
+  </Step>
+</Steps>
+
+<Note>
+The app uses a light blue background color (`#E6F4FE`) that matches the app's branding.
+</Note>
+
+#### Modern Android Features
+
+- **Edge-to-Edge UI**: Enabled with `edgeToEdgeEnabled: true` for immersive full-screen experience
+- **Predictive Back**: Disabled (`predictiveBackGestureEnabled: false`) for traditional navigation behavior
+
+### Web Configuration
+
+```json app.json
+{
+  "expo": {
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    }
+  }
+}
+```
+
+<Info>
+The `"output": "static"` setting generates a static website that can be hosted on any static hosting service like Netlify, Vercel, or GitHub Pages.
+</Info>
+
+## Asset Configuration
+
+NearYou uses several asset files referenced in the configuration:
+
+```bash
+assets/
+└── images/
+    ├── icon.png                        # Main app icon (iOS & base)
+    ├── favicon.png                     # Web favicon
+    ├── splash-icon.png                 # Splash screen logo
+    ├── android-icon-foreground.png     # Android adaptive icon foreground
+    ├── android-icon-background.png     # Android adaptive icon background
+    └── android-icon-monochrome.png     # Android themed icon (Android 13+)
+```
+
+### Icon Requirements
+
+<CardGroup cols={2}>
+  <Card title="App Icon" icon="square">
+    **Size:** 1024×1024px
+    
+    **Format:** PNG
+    
+    **Transparency:** Supported
+  </Card>
+  
+  <Card title="Adaptive Icon" icon="android">
+    **Size:** 1024×1024px
+    
+    **Safe zone:** 108×108dp center
+    
+    **Format:** PNG
+  </Card>
+</CardGroup>
+
+## Plugins
+
+Expo plugins extend native functionality through config plugins:
+
+```json app.json
+{
+  "expo": {
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ]
+    ]
+  }
+}
+```
+
+### Expo Router Plugin
+
+Enables file-based routing with automatic navigation setup.
+
+### Expo Splash Screen Plugin
+
+Configures the splash screen shown during app initialization:
+
+- **Image**: `./assets/images/splash-icon.png` (200px wide logo)
+- **Light mode**: White background (`#ffffff`)
+- **Dark mode**: Black background (`#000000`)
+- **Resize mode**: `contain` (maintains aspect ratio)
+
+<Tip>
+The splash screen automatically adapts to light and dark mode based on the system theme.
+</Tip>
+
+## Experimental Features
+
+```json app.json
+{
+  "expo": {
+    "newArchEnabled": true,
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
+```
+
+<CardGroup cols={3}>
+  <Card title="New Architecture" icon="microchip">
+    React Native's new architecture for better performance (`newArchEnabled: true`)
+  </Card>
+  
+  <Card title="Typed Routes" icon="code">
+    TypeScript support for Expo Router routes with autocomplete and type safety
+  </Card>
+  
+  <Card title="React Compiler" icon="rocket">
+    Automatic optimization of React components at build time
+  </Card>
+</CardGroup>
+
+<Warning>
+Experimental features may have breaking changes in future updates. Test thoroughly before deploying to production.
+</Warning>
+
+## TypeScript Configuration
+
+The app uses TypeScript with custom path aliases:
+
+```json tsconfig.json
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@assets/*": ["./assets/*"]
+    }
+  }
+}
+```
+
+### Path Aliases
+
+<CodeGroup>
+```typescript Component Import
+import { ThemedView } from '@/components/ThemedView';
+```
+
+```typescript Asset Import
+import logo from '@assets/images/icon.png';
+```
+</CodeGroup>
+
+These aliases simplify imports and avoid relative path issues like `../../../`.
+
+## Environment-Specific Configuration
+
+For environment variables and secrets:
+
+<Steps>
+  <Step title="Create .env file">
+    Create a `.env` file in the project root (add to `.gitignore`)
+  </Step>
+  
+  <Step title="Install expo-constants">
+    Already included: `expo-constants@~18.0.10`
+  </Step>
+  
+  <Step title="Access in code">
+    ```typescript
+    import Constants from 'expo-constants';
+    
+    const apiUrl = Constants.expoConfig?.extra?.apiUrl;
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+Never commit `.env` files to version control. Add them to `.gitignore` immediately.
+</Warning>
+
+## Modifying Configuration
+
+<Steps>
+  <Step title="Edit app.json">
+    Make your configuration changes in `app.json`
+  </Step>
+  
+  <Step title="Clear cache">
+    ```bash
+    npx expo start --clear
+    ```
+  </Step>
+  
+  <Step title="Rebuild for native changes">
+    Some changes (like plugins or native config) require a new build:
+    ```bash
+    # For development builds
+    npx expo prebuild --clean
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+Changes to plugins, app icons, or splash screens require rebuilding the native projects. JS-only changes (like colors or names) update immediately.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Building" icon="hammer" href="/guides/building">
+    Learn how to build your app for iOS, Android, and Web
+  </Card>
+  
+  <Card title="Deployment" icon="rocket" href="/guides/deployment">
+    Deploy your configured app to app stores and the web
+  </Card>
+</CardGroup>

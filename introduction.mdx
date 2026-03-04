@@ -1,0 +1,194 @@
+---
+title: Welcome to NearYou
+description: Discover nearby places, earn points, and explore your city with NearYou
+mode: custom
+---
+
+<div className="relative overflow-hidden bg-gradient-to-br from-[#0a7ea4] via-[#0d9fc4] to-[#E6F4FE] dark:from-[#1D3D47] dark:via-[#0a7ea4] dark:to-[#1a4a5a] py-20">
+  <div className="max-w-6xl mx-auto px-6 lg:px-8">
+    <div className="grid lg:grid-cols-12 gap-8 items-center">
+      <div className="lg:col-span-7">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+          Explore Your City with NearYou
+        </h1>
+        <p className="text-lg sm:text-xl text-white/90 max-w-2xl mb-8">
+          A mobile app built with Expo and React Native that helps you discover nearby places of interest, earn points for exploring, and enjoy new experiences in your city.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <a
+            href="/quickstart"
+            className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-[#0a7ea4] font-semibold hover:bg-white/90 transition-colors no-underline"
+          >
+            Get Started
+          </a>
+          <a
+            href="/features/place-discovery"
+            className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white/30 bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors no-underline"
+          >
+            Explore Features
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Quick Start
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    Get NearYou running on your device in minutes
+  </p>
+
+  <Steps>
+    <Step title="Clone the repository">
+      Clone the NearYou repository to your local machine:
+      
+      ```bash
+      git clone https://github.com/edgarconrado/nearyou.git
+      cd nearyou
+      ```
+    </Step>
+
+    <Step title="Install dependencies">
+      Install the required dependencies using your preferred package manager:
+      
+      <CodeGroup>
+        ```bash npm
+        npm install
+        ```
+
+        ```bash yarn
+        yarn install
+        ```
+
+        ```bash pnpm
+        pnpm install
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Start the development server">
+      Launch the Expo development server:
+      
+      ```bash
+      npx expo start
+      ```
+      
+      <Note>
+        This will open Expo Developer Tools in your browser. From there, you can run the app on an emulator or physical device using the Expo Go app.
+      </Note>
+    </Step>
+
+    <Step title="Explore on your device">
+      Open the Expo Go app on your iOS or Android device and scan the QR code to launch NearYou. Start discovering places near you!
+    </Step>
+  </Steps>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Key Features
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    Everything you need to build an engaging location-based mobile experience
+  </p>
+
+  <CardGroup cols={2}>
+    <Card title="Place Discovery" icon="map-location-dot" href="/features/place-discovery">
+      Discover nearby places of interest with location-based exploration and interactive maps
+    </Card>
+    <Card title="Points & Rewards" icon="trophy" href="/features/points-system">
+      Earn points and rewards for exploring new locations and engaging with the app
+    </Card>
+    <Card title="Cross-Platform" icon="mobile-screen" href="/installation">
+      Built with Expo and React Native for seamless iOS, Android, and Web support
+    </Card>
+    <Card title="Beautiful Theming" icon="palette" href="/development/theming">
+      Gorgeous light and dark mode support with customizable themed components
+    </Card>
+    <Card title="File-Based Routing" icon="route" href="/development/navigation">
+      Intuitive navigation powered by Expo Router's file-based routing system
+    </Card>
+    <Card title="Reusable Components" icon="cubes" href="/development/components">
+      Built with modular, theme-aware components for rapid development
+    </Card>
+  </CardGroup>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-4">
+    Built with Modern Technology
+  </h2>
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-8">
+    NearYou leverages the best tools in the React Native ecosystem
+  </p>
+
+  <div className="grid md:grid-cols-2 gap-6">
+    <div className="p-6 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#1a1d27]">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-lg bg-[#E6F4FE] dark:bg-[#1D3D47] flex items-center justify-center">
+          <span className="text-xl">⚛️</span>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Expo & React Native</h3>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Built on Expo SDK 54 and React Native 0.81, with the new React 19 architecture for optimal performance
+      </p>
+    </div>
+
+    <div className="p-6 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#1a1d27]">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-lg bg-[#E6F4FE] dark:bg-[#1D3D47] flex items-center justify-center">
+          <span className="text-xl">📱</span>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Expo Router</h3>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        File-based routing with typed routes for a native-like navigation experience across platforms
+      </p>
+    </div>
+
+    <div className="p-6 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#1a1d27]">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-lg bg-[#E6F4FE] dark:bg-[#1D3D47] flex items-center justify-center">
+          <span className="text-xl">🎨</span>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">TypeScript</h3>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Fully typed with TypeScript 5.9 for better developer experience and fewer runtime errors
+      </p>
+    </div>
+
+    <div className="p-6 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#1a1d27]">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-lg bg-[#E6F4FE] dark:bg-[#1D3D47] flex items-center justify-center">
+          <span className="text-xl">✨</span>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Reanimated & Gestures</h3>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Smooth animations and natural gestures powered by React Native Reanimated and Gesture Handler
+      </p>
+    </div>
+  </div>
+</div>
+
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="p-8 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-gradient-to-br from-[#E6F4FE] to-white dark:from-[#1D3D47] dark:to-[#1a1d27]">
+    <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
+      Ready to start exploring?
+    </h2>
+    <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
+      Follow our quickstart guide to get NearYou running on your device in minutes
+    </p>
+    <a
+      href="/quickstart"
+      className="inline-flex items-center px-6 py-3 rounded-lg bg-[#0a7ea4] text-white font-semibold hover:bg-[#0d9fc4] transition-colors no-underline"
+    >
+      Get Started Now
+    </a>
+  </div>
+</div>

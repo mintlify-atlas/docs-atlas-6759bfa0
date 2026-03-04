@@ -1,0 +1,739 @@
+---
+title: 'Components'
+description: 'Component architecture and available UI components in NearYou'
+icon: 'cube'
+---
+
+This guide covers all available components in NearYou, their APIs, and usage examples.
+
+## Component Architecture
+
+NearYou follows a component-based architecture with:
+
+- **Themed Components** - Automatically adapt to light/dark mode
+- **Layout Components** - Handle scrolling and structure
+- **Interactive Components** - Buttons, links, and inputs
+- **UI Components** - Icons, collapsibles, and utilities
+
+## Themed Components
+
+Themed components automatically respond to color scheme changes.
+
+### ThemedText
+
+**Location:** `src/components/themed-text.tsx`
+
+A text component with predefined typography styles and automatic theme colors.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { ThemedText } from '@/components/themed-text';
+
+    <ThemedText type="title">Welcome to NearYou</ThemedText>
+    <ThemedText type="subtitle">Getting Started</ThemedText>
+    <ThemedText type="defaultSemiBold">Important info</ThemedText>
+    <ThemedText type="link">Learn more</ThemedText>
+    <ThemedText>Regular body text</ThemedText>
+    ```
+  </Tab>
+  <Tab title="Props">
+    ```typescript
+    export type ThemedTextProps = TextProps & {
+      lightColor?: string;     // Override light mode color
+      darkColor?: string;      // Override dark mode color
+      type?: 'default'         // 16px, line height 24
+           | 'title'           // 32px, bold
+           | 'defaultSemiBold' // 16px, semibold
+           | 'subtitle'        // 20px, bold
+           | 'link';           // 16px, blue color
+    };
+    ```
+  </Tab>
+  <Tab title="Examples">
+    ```tsx
+    // With custom colors
+    <ThemedText
+      lightColor="#059669"
+      darkColor="#34d399"
+    >
+      Success message
+    </ThemedText>
+
+    // With custom styles
+    <ThemedText
+      type="subtitle"
+      style={{ marginBottom: 16 }}
+    >
+      Section Title
+    </ThemedText>
+
+    // Multiple styles
+    <ThemedText
+      type="default"
+      style={[styles.text, { textAlign: 'center' }]}
+    >
+      Centered text
+    </ThemedText>
+    ```
+  </Tab>
+</Tabs>
+
+### ThemedView
+
+**Location:** `src/components/themed-view.tsx`
+
+A view container with automatic background color theming.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { ThemedView } from '@/components/themed-view';
+
+    <ThemedView style={styles.container}>
+      <ThemedText>Content</ThemedText>
+    </ThemedView>
+    ```
+  </Tab>
+  <Tab title="Props">
+    ```typescript
+    export type ThemedViewProps = ViewProps & {
+      lightColor?: string; // Background color in light mode
+      darkColor?: string;  // Background color in dark mode
+    };
+    ```
+  </Tab>
+  <Tab title="Examples">
+    ```tsx
+    // Card with custom background
+    <ThemedView
+      lightColor="#f3f4f6"
+      darkColor="#1f2937"
+      style={styles.card}
+    >
+      <ThemedText>Card content</ThemedText>
+    </ThemedView>
+
+    // Nested themed views
+    <ThemedView style={styles.container}>
+      <ThemedView
+        lightColor="#ffffff"
+        darkColor="#374151"
+        style={styles.section}
+      >
+        <ThemedText>Section</ThemedText>
+      </ThemedView>
+    </ThemedView>
+    ```
+  </Tab>
+</Tabs>
+
+## Layout Components
+
+### ParallaxScrollView
+
+**Location:** `src/components/parallax-scroll-view.tsx`
+
+A scroll view with an animated parallax header that scales and translates on scroll.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import ParallaxScrollView from '@/components/parallax-scroll-view';
+    import { Image } from 'expo-image';
+
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerImage={
+        <Image
+          source={require('@assets/images/header.png')}
+          style={styles.headerImage}
+        />
+      }
+    >
+      <ThemedText type="title">Content below header</ThemedText>
+      {/* More content */}
+    </ParallaxScrollView>
+    ```
+  </Tab>
+  <Tab title="Props">
+    ```typescript
+    type Props = PropsWithChildren<{
+      headerImage: ReactElement;
+      headerBackgroundColor: {
+        dark: string;
+        light: string;
+      };
+    }>
+    ```
+  </Tab>
+  <Tab title="Features">
+    - **Header height:** 250px
+    - **Animation:** 
+      - Parallax scroll (0.75x speed)
+      - Scale effect on pull-down
+    - **Sticky behavior:** Header sticks at top when scrolling up
+    - **Theme-aware:** Background matches color scheme
+
+    ```tsx
+    // Animation configuration
+    const headerAnimatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          {
+            translateY: interpolate(
+              scrollOffset.value,
+              [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+              [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
+            ),
+          },
+          {
+            scale: interpolate(
+              scrollOffset.value,
+              [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+              [2, 1, 1]
+            ),
+          },
+        ],
+      };
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Interactive Components
+
+### HapticTab
+
+**Location:** `src/components/haptic-tab.tsx`
+
+Provides haptic feedback when pressing tab buttons (iOS only).
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { Tabs } from 'expo-router';
+    import { HapticTab } from '@/components/haptic-tab';
+
+    <Tabs
+      screenOptions={{
+        tabBarButton: HapticTab,
+      }}
+    >
+      {/* Tab screens */}
+    </Tabs>
+    ```
+  </Tab>
+  <Tab title="Implementation">
+    ```tsx src/components/haptic-tab.tsx
+    import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
+    import { PlatformPressable } from '@react-navigation/elements';
+    import * as Haptics from 'expo-haptics';
+
+    export function HapticTab(props: BottomTabBarButtonProps) {
+      return (
+        <PlatformPressable
+          {...props}
+          onPressIn={(ev) => {
+            if (process.env.EXPO_OS === 'ios') {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+            props.onPressIn?.(ev);
+          }}
+        />
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+Haptic feedback only works on iOS devices. On Android and web, the component functions as a normal tab button without haptics.
+</Note>
+
+### ExternalLink
+
+**Location:** `src/components/external-link.tsx`
+
+Opens URLs in an in-app browser on native platforms, and in a new tab on web.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { ExternalLink } from '@/components/external-link';
+
+    <ExternalLink href="https://expo.dev">
+      <ThemedText type="link">Visit Expo</ThemedText>
+    </ExternalLink>
+    ```
+  </Tab>
+  <Tab title="Implementation">
+    ```tsx src/components/external-link.tsx
+    import { Link } from 'expo-router';
+    import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
+
+    export function ExternalLink({ href, ...rest }: Props) {
+      return (
+        <Link
+          target="_blank"
+          {...rest}
+          href={href}
+          onPress={async (event) => {
+            if (process.env.EXPO_OS !== 'web') {
+              event.preventDefault();
+              await openBrowserAsync(href, {
+                presentationStyle: WebBrowserPresentationStyle.AUTOMATIC,
+              });
+            }
+          }}
+        />
+      );
+    }
+    ```
+  </Tab>
+  <Tab title="Features">
+    **On Native:**
+    - Opens in-app browser
+    - Automatic presentation style
+    - Share and copy URL buttons
+    - Native back button
+
+    **On Web:**
+    - Opens in new tab
+    - Standard browser behavior
+  </Tab>
+</Tabs>
+
+### HelloWave
+
+**Location:** `src/components/hello-wave.tsx`
+
+An animated waving hand emoji.
+
+```tsx
+import { HelloWave } from '@/components/hello-wave';
+
+<ThemedView style={styles.titleContainer}>
+  <ThemedText type="title">Welcome!</ThemedText>
+  <HelloWave />
+</ThemedView>
+```
+
+Animation details:
+- **Duration:** 300ms per wave
+- **Iterations:** 4 times
+- **Rotation:** 0° to 25° and back
+
+## UI Components
+
+### IconSymbol
+
+**Location:** `src/components/ui/icon-symbol.tsx` (Android/Web), `src/components/ui/icon-symbol.ios.tsx` (iOS)
+
+Cross-platform icon component using SF Symbols on iOS and Material Icons on Android/Web.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { IconSymbol } from '@/components/ui/icon-symbol';
+
+    <IconSymbol
+      name="house.fill"
+      size={24}
+      color="#0a7ea4"
+    />
+
+    // With dynamic color
+    const textColor = useThemeColor({}, 'text');
+    <IconSymbol
+      name="paperplane.fill"
+      size={28}
+      color={textColor}
+    />
+    ```
+  </Tab>
+  <Tab title="Available Icons">
+    Current icon mappings in `src/components/ui/icon-symbol.tsx:16`:
+
+    | SF Symbol | Material Icon | Description |
+    |-----------|---------------|-------------|
+    | `house.fill` | `home` | Home icon |
+    | `paperplane.fill` | `send` | Send/explore icon |
+    | `chevron.left.forwardslash.chevron.right` | `code` | Code icon |
+    | `chevron.right` | `chevron-right` | Right arrow |
+
+    **Adding new icons:**
+
+    ```tsx src/components/ui/icon-symbol.tsx
+    const MAPPING = {
+      // Existing...
+      'person.fill': 'person',
+      'gear': 'settings',
+      'bell.fill': 'notifications',
+    } as IconMapping;
+    ```
+  </Tab>
+  <Tab title="Props">
+    ```typescript
+    type IconSymbolProps = {
+      name: IconSymbolName;             // Icon identifier
+      size?: number;                    // Icon size (default: 24)
+      color: string | OpaqueColorValue; // Icon color
+      style?: StyleProp<TextStyle>;     // Additional styles
+      weight?: SymbolWeight;            // iOS only: icon weight
+    };
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+**Finding icons:**
+- iOS: [SF Symbols App](https://developer.apple.com/sf-symbols/)
+- Android/Web: [Expo Icons Directory](https://icons.expo.fyi)
+</Note>
+
+### Collapsible
+
+**Location:** `src/components/ui/collapsible.tsx`
+
+Expandable/collapsible content section with animated chevron.
+
+<Tabs>
+  <Tab title="Usage">
+    ```tsx
+    import { Collapsible } from '@/components/ui/collapsible';
+
+    <Collapsible title="Advanced Settings">
+      <ThemedText>Hidden content that expands on tap</ThemedText>
+      <ThemedText>You can put any components here</ThemedText>
+    </Collapsible>
+    ```
+  </Tab>
+  <Tab title="Implementation">
+    ```tsx src/components/ui/collapsible.tsx
+    import { PropsWithChildren, useState } from 'react';
+    import { TouchableOpacity } from 'react-native';
+    import { ThemedText } from '@/components/themed-text';
+    import { IconSymbol } from '@/components/ui/icon-symbol';
+
+    export function Collapsible({
+      children,
+      title
+    }: PropsWithChildren & { title: string }) {
+      const [isOpen, setIsOpen] = useState(false);
+
+      return (
+        <ThemedView>
+          <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+            <IconSymbol
+              name="chevron.right"
+              style={{
+                transform: [{ rotate: isOpen ? '90deg' : '0deg' }]
+              }}
+            />
+            <ThemedText type="defaultSemiBold">{title}</ThemedText>
+          </TouchableOpacity>
+          {isOpen && <ThemedView>{children}</ThemedView>}
+        </ThemedView>
+      );
+    }
+    ```
+  </Tab>
+  <Tab title="Examples">
+    ```tsx
+    // Simple usage
+    <Collapsible title="More Info">
+      <ThemedText>Extra details...</ThemedText>
+    </Collapsible>
+
+    // Multiple collapsibles
+    <>
+      <Collapsible title="Section 1">
+        <ThemedText>Content 1</ThemedText>
+      </Collapsible>
+      <Collapsible title="Section 2">
+        <ThemedText>Content 2</ThemedText>
+      </Collapsible>
+    </>
+
+    // Nested content
+    <Collapsible title="Features">
+      <ThemedText type="defaultSemiBold">Available features:</ThemedText>
+      {features.map(feature => (
+        <ThemedText key={feature.id}>
+          • {feature.name}
+        </ThemedText>
+      ))}
+    </Collapsible>
+    ```
+  </Tab>
+</Tabs>
+
+## Creating Custom Components
+
+### Using Themed Components
+
+Build on top of themed components for consistency:
+
+```tsx components/custom-button.tsx
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+type ButtonProps = {
+  title: string;
+  onPress: () => void;
+  variant?: 'primary' | 'secondary';
+};
+
+export function CustomButton({ title, onPress, variant = 'primary' }: ButtonProps) {
+  const tintColor = useThemeColor({}, 'tint');
+  const backgroundColor = variant === 'primary' ? tintColor : 'transparent';
+  const textColor = variant === 'primary' ? '#fff' : tintColor;
+
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <ThemedView
+        style={[
+          styles.button,
+          { backgroundColor },
+          variant === 'secondary' && styles.outlined
+        ]}
+      >
+        <ThemedText
+          style={[styles.text, { color: textColor }]}
+          type="defaultSemiBold"
+        >
+          {title}
+        </ThemedText>
+      </ThemedView>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  outlined: {
+    borderWidth: 2,
+    borderColor: 'currentColor',
+  },
+  text: {
+    fontSize: 16,
+  },
+});
+```
+
+### Component Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Composition" icon="layer-group">
+    Build complex components from smaller themed components
+  </Card>
+  <Card title="Theme Integration" icon="palette">
+    Use `useThemeColor` and `useColorScheme` for consistency
+  </Card>
+  <Card title="TypeScript Props" icon="code">
+    Define clear prop interfaces with TypeScript
+  </Card>
+  <Card title="Style Composition" icon="paintbrush">
+    Allow style overrides via props
+  </Card>
+</CardGroup>
+
+## Component Patterns
+
+### Compound Components
+
+Create related components that work together:
+
+```tsx components/card.tsx
+import { PropsWithChildren } from 'react';
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+import { StyleSheet } from 'react-native';
+
+function Card({ children }: PropsWithChildren) {
+  return (
+    <ThemedView
+      lightColor="#ffffff"
+      darkColor="#1f2937"
+      style={styles.card}
+    >
+      {children}
+    </ThemedView>
+  );
+}
+
+function CardHeader({ children }: PropsWithChildren) {
+  return (
+    <ThemedView style={styles.header}>
+      {children}
+    </ThemedView>
+  );
+}
+
+function CardTitle({ children }: PropsWithChildren) {
+  return <ThemedText type="subtitle">{children}</ThemedText>;
+}
+
+function CardContent({ children }: PropsWithChildren) {
+  return <ThemedView style={styles.content}>{children}</ThemedView>;
+}
+
+Card.Header = CardHeader;
+Card.Title = CardTitle;
+Card.Content = CardContent;
+
+export { Card };
+
+// Usage:
+<Card>
+  <Card.Header>
+    <Card.Title>Title</Card.Title>
+  </Card.Header>
+  <Card.Content>
+    <ThemedText>Content</ThemedText>
+  </Card.Content>
+</Card>
+```
+
+### Render Props
+
+Provide flexible rendering options:
+
+```tsx components/list.tsx
+type ListProps<T> = {
+  data: T[];
+  renderItem: (item: T, index: number) => ReactNode;
+  emptyMessage?: string;
+};
+
+export function List<T>({ data, renderItem, emptyMessage }: ListProps<T>) {
+  if (data.length === 0) {
+    return (
+      <ThemedView style={styles.empty}>
+        <ThemedText>{emptyMessage ?? 'No items'}</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  return (
+    <ThemedView>
+      {data.map((item, index) => (
+        <ThemedView key={index}>
+          {renderItem(item, index)}
+        </ThemedView>
+      ))}
+    </ThemedView>
+  );
+}
+
+// Usage:
+<List
+  data={users}
+  renderItem={(user) => (
+    <ThemedText>{user.name}</ThemedText>
+  )}
+  emptyMessage="No users found"
+/>
+```
+
+## Performance Optimization
+
+### Memoization
+
+Use `React.memo` for expensive components:
+
+```tsx
+import { memo } from 'react';
+
+type ItemProps = {
+  title: string;
+  description: string;
+  onPress: () => void;
+};
+
+const ListItem = memo(function ListItem({ title, description, onPress }: ItemProps) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <ThemedView style={styles.item}>
+        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+        <ThemedText>{description}</ThemedText>
+      </ThemedView>
+    </TouchableOpacity>
+  );
+});
+```
+
+### Virtualized Lists
+
+For long lists, use FlatList or SectionList:
+
+```tsx
+import { FlatList } from 'react-native';
+import { ThemedView } from '@/components/themed-view';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+function UserList({ users }) {
+  const backgroundColor = useThemeColor({}, 'background');
+
+  return (
+    <FlatList
+      data={users}
+      renderItem={({ item }) => <UserItem user={item} />}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={{ backgroundColor }}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      windowSize={5}
+    />
+  );
+}
+```
+
+## Testing Components
+
+```tsx __tests__/themed-text.test.tsx
+import { render } from '@testing-library/react-native';
+import { ThemedText } from '@/components/themed-text';
+
+describe('ThemedText', () => {
+  it('renders with default type', () => {
+    const { getByText } = render(
+      <ThemedText>Hello</ThemedText>
+    );
+    expect(getByText('Hello')).toBeTruthy();
+  });
+
+  it('applies title styles', () => {
+    const { getByText } = render(
+      <ThemedText type="title">Title</ThemedText>
+    );
+    const element = getByText('Title');
+    expect(element.props.style).toMatchObject({
+      fontSize: 32,
+      fontWeight: 'bold',
+    });
+  });
+});
+```
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Theme System" icon="palette" href="/development/theming">
+    Customize colors and themes
+  </Card>
+  <Card title="Navigation" icon="compass" href="/development/navigation">
+    Connect components with routing
+  </Card>
+  <Card title="React Native Docs" icon="book" href="https://reactnative.dev/docs/components-and-apis">
+    Learn about built-in components
+  </Card>
+</CardGroup>

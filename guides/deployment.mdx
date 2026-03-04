@@ -1,0 +1,718 @@
+---
+title: Deployment
+description: Deploy NearYou to iOS App Store, Google Play Store, and web hosting
+icon: 'rocket'
+---
+
+## Overview
+
+Once you've built NearYou, you can deploy it to app stores and web hosting platforms. This guide covers deployment workflows for all three platforms.
+
+## Deployment Checklist
+
+Before deploying to production:
+
+<Steps>
+  <Step title="Test thoroughly">
+    - Test on physical devices (iOS and Android)
+    - Verify all features work in production mode
+    - Check performance and bundle size
+    - Test deep linking with `nearyou://` scheme
+  </Step>
+  
+  <Step title="Update version">
+    Increment version in `app.json`:
+    ```json
+    {
+      "expo": {
+        "version": "1.0.1"
+      }
+    }
+    ```
+  </Step>
+  
+  <Step title="Review configuration">
+    - App name and description
+    - Icons and splash screens
+    - Privacy policy URL (if required)
+    - Permissions and capabilities
+  </Step>
+  
+  <Step title="Code quality checks">
+    ```bash
+    npm run lint
+    npx tsc --noEmit
+    ```
+  </Step>
+</Steps>
+
+## iOS App Store Deployment
+
+### Prerequisites
+
+<CardGroup cols={2}>
+  <Card title="Apple Developer Account" icon="apple">
+    $99/year membership required
+    
+    [developer.apple.com](https://developer.apple.com)
+  </Card>
+  
+  <Card title="App Store Connect" icon="store">
+    Create app listing at [appstoreconnect.apple.com](https://appstoreconnect.apple.com)
+  </Card>
+  
+  <Card title="Certificates" icon="certificate">
+    Distribution certificate and provisioning profile
+    
+    (EAS handles this automatically)
+  </Card>
+  
+  <Card title="macOS + Xcode" icon="desktop">
+    Required for local builds
+    
+    Not needed with EAS Build
+  </Card>
+</CardGroup>
+
+### Using EAS Submit (Recommended)
+
+<Steps>
+  <Step title="Build production app">
+    ```bash
+    eas build --platform ios --profile production
+    ```
+    
+    Wait for build to complete (10-30 minutes).
+  </Step>
+  
+  <Step title="Configure submission">
+    ```bash
+    eas submit --platform ios
+    ```
+    
+    EAS will prompt for:
+    - Apple ID credentials
+    - App-specific password (generate at appleid.apple.com)
+    - App Store Connect API key (optional, recommended)
+  </Step>
+  
+  <Step title="Submit to App Store">
+    EAS automatically:
+    - Uploads IPA to App Store Connect
+    - Handles app metadata
+    - Validates the build
+  </Step>
+  
+  <Step title="Complete App Store listing">
+    In App Store Connect:
+    - Add screenshots (required for all device sizes)
+    - Write app description
+    - Set pricing and availability
+    - Submit for review
+  </Step>
+</Steps>
+
+<Info>
+Apple review typically takes 24-48 hours. Check status at [appstoreconnect.apple.com](https://appstoreconnect.apple.com).
+</Info>
+
+### iOS Configuration Requirements
+
+Update `app.json` with required iOS fields:
+
+```json app.json
+{
+  "expo": {
+    "ios": {
+      "bundleIdentifier": "com.yourcompany.nearyou",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "NearYou needs your location to discover nearby places."
+      }
+    }
+  }
+}
+```
+
+<Warning>
+Add `bundleIdentifier` before building. It must match the identifier in App Store Connect.
+</Warning>
+
+### Screenshot Requirements
+
+iOS App Store requires screenshots for these devices:
+
+- **6.7" Display (iPhone 15 Pro Max)**: 1290 × 2796 pixels
+- **6.5" Display (iPhone 11 Pro Max)**: 1242 × 2688 pixels  
+- **5.5" Display (iPhone 8 Plus)**: 1242 × 2208 pixels
+- **iPad Pro (12.9")**: 2048 × 2732 pixels (if supporting iPad)
+
+<Tip>
+Use tools like [AppLaunchpad](https://theapplaunchpad.com) or Figma templates to generate screenshots quickly.
+</Tip>
+
+## Android Play Store Deployment
+
+### Prerequisites
+
+<CardGroup cols={2}>
+  <Card title="Google Play Console" icon="google">
+    $25 one-time registration
+    
+    [play.google.com/console](https://play.google.com/console)
+  </Card>
+  
+  <Card title="App Listing" icon="list">
+    Create app in Play Console with package name
+  </Card>
+  
+  <Card title="Signing Key" icon="key">
+    Android keystore for signing
+    
+    (EAS manages this automatically)
+  </Card>
+  
+  <Card title="Android Studio" icon="android">
+    Only needed for local builds
+  </Card>
+</CardGroup>
+
+### Using EAS Submit (Recommended)
+
+<Steps>
+  <Step title="Build production app">
+    ```bash
+    eas build --platform android --profile production
+    ```
+    
+    Builds an AAB (Android App Bundle) for Play Store.
+  </Step>
+  
+  <Step title="Create service account">
+    In Google Play Console:
+    - Go to Setup > API access
+    - Create service account
+    - Grant "Release Manager" permissions
+    - Download JSON key
+  </Step>
+  
+  <Step title="Submit to Play Store">
+    ```bash
+    eas submit --platform android
+    ```
+    
+    Provide the service account JSON when prompted.
+  </Step>
+  
+  <Step title="Complete Play Store listing">
+    In Play Console:
+    - Add screenshots (required)
+    - Write app description (short and full)
+    - Upload feature graphic (1024 × 500 pixels)
+    - Set content rating
+    - Complete questionnaire
+    - Submit for review
+  </Step>
+</Steps>
+
+<Info>
+Google Play review is typically faster than Apple (often within hours to 1-2 days).
+</Info>
+
+### Android Configuration Requirements
+
+Update `app.json` with Android fields:
+
+```json app.json
+{
+  "expo": {
+    "android": {
+      "package": "com.yourcompany.nearyou",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    }
+  }
+}
+```
+
+<Note>
+`versionCode` must be an integer that increments with each release. Use `autoIncrement` in EAS to handle this automatically.
+</Note>
+
+### Screenshot Requirements
+
+Google Play requires:
+
+- **Phone screenshots**: At least 2, up to 8 (1080 × 1920 pixels or 16:9 ratio)
+- **7" tablet** (optional): 1200 × 1920 pixels
+- **10" tablet** (optional): 1600 × 2560 pixels
+- **Feature graphic** (required): 1024 × 500 pixels
+
+### Release Tracks
+
+Google Play offers multiple release tracks:
+
+<Tabs>
+  <Tab title="Internal Testing">
+    For your team only. No review required.
+    
+    ```bash
+    eas submit -p android --track internal
+    ```
+  </Tab>
+  
+  <Tab title="Closed Testing">
+    For specific testers. Limited review.
+    
+    ```bash
+    eas submit -p android --track alpha
+    ```
+  </Tab>
+  
+  <Tab title="Open Testing">
+    Public beta. Anyone can join.
+    
+    ```bash
+    eas submit -p android --track beta
+    ```
+  </Tab>
+  
+  <Tab title="Production">
+    Public release to all users.
+    
+    ```bash
+    eas submit -p android --track production
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+Use internal testing first, then graduate to closed testing, open testing, and finally production.
+</Tip>
+
+## Web Deployment
+
+NearYou's web configuration uses static output, making it compatible with any static hosting provider.
+
+```json app.json
+{
+  "expo": {
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    }
+  }
+}
+```
+
+### Build Web App
+
+```bash
+npx expo export:web
+```
+
+Generates static files in the `web-build/` directory.
+
+### Hosting Options
+
+<Tabs>
+  <Tab title="Vercel">
+    <Steps>
+      <Step title="Install Vercel CLI">
+        ```bash
+        npm install -g vercel
+        ```
+      </Step>
+      
+      <Step title="Deploy">
+        ```bash
+        npx expo export:web
+        cd web-build
+        vercel --prod
+        ```
+      </Step>
+    </Steps>
+    
+    Or connect your GitHub repo for automatic deployments.
+  </Tab>
+  
+  <Tab title="Netlify">
+    <Steps>
+      <Step title="Create netlify.toml">
+        ```toml netlify.toml
+        [build]
+          command = "npx expo export:web"
+          publish = "web-build"
+        
+        [[redirects]]
+          from = "/*"
+          to = "/index.html"
+          status = 200
+        ```
+      </Step>
+      
+      <Step title="Deploy">
+        ```bash
+        npm install -g netlify-cli
+        netlify deploy --prod
+        ```
+        
+        Or connect GitHub for automatic deployments.
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="GitHub Pages">
+    <Steps>
+      <Step title="Install gh-pages">
+        ```bash
+        npm install --save-dev gh-pages
+        ```
+      </Step>
+      
+      <Step title="Add deploy script">
+        ```json package.json
+        {
+          "scripts": {
+            "deploy": "gh-pages -d web-build"
+          }
+        }
+        ```
+      </Step>
+      
+      <Step title="Build and deploy">
+        ```bash
+        npx expo export:web
+        npm run deploy
+        ```
+      </Step>
+    </Steps>
+    
+    Access at `https://yourusername.github.io/nearyou`
+  </Tab>
+  
+  <Tab title="AWS S3 + CloudFront">
+    <Steps>
+      <Step title="Create S3 bucket">
+        - Enable static website hosting
+        - Set public read permissions
+      </Step>
+      
+      <Step title="Build and upload">
+        ```bash
+        npx expo export:web
+        aws s3 sync web-build/ s3://your-bucket-name
+        ```
+      </Step>
+      
+      <Step title="Create CloudFront distribution">
+        - Set S3 bucket as origin
+        - Configure HTTPS certificate
+        - Set default root object to `index.html`
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+### Web Configuration Tips
+
+<CardGroup cols={2}>
+  <Card title="Custom Domain" icon="globe">
+    Add CNAME record pointing to your hosting provider.
+    
+    Most providers offer free HTTPS.
+  </Card>
+  
+  <Card title="Progressive Web App" icon="mobile-screen">
+    Expo web includes PWA manifest automatically.
+    
+    Users can "Add to Home Screen".
+  </Card>
+  
+  <Card title="SEO" icon="magnifying-glass">
+    Add `meta.json` or modify HTML template for better SEO.
+  </Card>
+  
+  <Card title="Analytics" icon="chart-line">
+    Add Google Analytics or Plausible to track usage.
+  </Card>
+</CardGroup>
+
+## Environment Management
+
+### EAS Secrets
+
+Store sensitive data in EAS Secrets:
+
+```bash
+# Add secret
+eas secret:create --name API_KEY --value your-api-key --type string
+
+# List secrets
+eas secret:list
+
+# Use in app
+import Constants from 'expo-constants';
+const apiKey = Constants.expoConfig?.extra?.API_KEY;
+```
+
+### Environment-Specific Builds
+
+Configure different environments in `eas.json`:
+
+```json eas.json
+{
+  "build": {
+    "development": {
+      "env": {
+        "API_URL": "http://localhost:3000"
+      }
+    },
+    "staging": {
+      "env": {
+        "API_URL": "https://staging-api.nearyou.com"
+      }
+    },
+    "production": {
+      "env": {
+        "API_URL": "https://api.nearyou.com"
+      }
+    }
+  }
+}
+```
+
+Build for specific environment:
+
+```bash
+eas build --profile staging --platform all
+```
+
+## Over-the-Air Updates
+
+### EAS Update
+
+Push JavaScript updates without resubmitting to stores:
+
+<Steps>
+  <Step title="Install EAS Update">
+    Already included if using Expo SDK 54.
+  </Step>
+  
+  <Step title="Configure updates">
+    In `app.json`:
+    ```json
+    {
+      "expo": {
+        "updates": {
+          "url": "https://u.expo.dev/your-project-id"
+        }
+      }
+    }
+    ```
+  </Step>
+  
+  <Step title="Publish update">
+    ```bash
+    eas update --branch production --message "Fix login bug"
+    ```
+  </Step>
+  
+  <Step title="Users receive update">
+    Updates download automatically on next app launch.
+  </Step>
+</Steps>
+
+<Warning>
+OTA updates only work for JavaScript changes. Native code changes (plugins, dependencies) require a new build and store submission.
+</Warning>
+
+### Update Channels
+
+Manage different update channels:
+
+```bash
+# Production users
+eas update --branch production
+
+# Beta testers
+eas update --branch staging
+
+# Development
+eas update --branch development
+```
+
+Configure branches in builds:
+
+```json eas.json
+{
+  "build": {
+    "production": {
+      "channel": "production"
+    },
+    "preview": {
+      "channel": "staging"
+    }
+  }
+}
+```
+
+## Monitoring and Analytics
+
+### Crash Reporting
+
+Integrate crash reporting services:
+
+<CardGroup cols={3}>
+  <Card title="Sentry" icon="shield">
+    ```bash
+    npx expo install @sentry/react-native
+    ```
+  </Card>
+  
+  <Card title="Bugsnag" icon="bug">
+    ```bash
+    npm install @bugsnag/react-native
+    ```
+  </Card>
+  
+  <Card title="Firebase Crashlytics" icon="fire">
+    ```bash
+    npx expo install @react-native-firebase/crashlytics
+    ```
+  </Card>
+</CardGroup>
+
+### User Analytics
+
+<CodeGroup>
+```typescript Expo Analytics
+import * as Analytics from 'expo-analytics';
+
+Analytics.track('place_discovered', {
+  placeId: '123',
+  category: 'restaurant'
+});
+```
+
+```typescript Firebase Analytics
+import analytics from '@react-native-firebase/analytics';
+
+await analytics().logEvent('place_discovered', {
+  placeId: '123',
+  category: 'restaurant'
+});
+```
+</CodeGroup>
+
+## Rollback Strategy
+
+### EAS Update Rollback
+
+If an OTA update causes issues:
+
+```bash
+# Republish previous update
+eas update --branch production --message "Rollback to v1.0.0"
+
+# Or republish specific update ID
+eas update:republish --update-id abc123
+```
+
+### App Store Rollback
+
+For native app issues:
+
+1. **iOS**: Use "Phased Release" to limit impact, then halt rollout
+2. **Android**: Use staged rollout (10% → 50% → 100%), then pause if issues arise
+3. Submit hotfix build as soon as possible
+
+## Continuous Deployment
+
+### GitHub Actions Example
+
+```yaml .github/workflows/deploy.yml
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      
+      - name: Build and submit
+        run: |
+          eas build --platform all --profile production --non-interactive
+          eas submit --platform all --non-interactive
+```
+
+<Tip>
+Store `EXPO_TOKEN` in GitHub Secrets. Generate at [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens).
+</Tip>
+
+## Post-Deployment
+
+<Steps>
+  <Step title="Monitor metrics">
+    - App crashes and errors
+    - User engagement
+    - Performance metrics
+    - Store reviews and ratings
+  </Step>
+  
+  <Step title="Respond to reviews">
+    Engage with users on App Store and Play Store reviews.
+  </Step>
+  
+  <Step title="Plan updates">
+    Based on user feedback and analytics, plan next features:
+    - 🗺️ Advanced place filters
+    - 🏆 Achievement system
+    - 💬 User reviews
+    - 🌐 Multi-language support
+  </Step>
+  
+  <Step title="Regular maintenance">
+    - Keep dependencies updated
+    - Test on new OS versions
+    - Monitor breaking changes in Expo SDK
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Review and optimize your app configuration
+  </Card>
+  
+  <Card title="Building" icon="hammer" href="/guides/building">
+    Learn more about the build process and optimization
+  </Card>
+</CardGroup>

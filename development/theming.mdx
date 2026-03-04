@@ -1,0 +1,417 @@
+---
+title: 'Theme System'
+description: 'Implementing and customizing the theme system with light and dark mode support'
+icon: 'palette'
+---
+
+NearYou includes a built-in theme system that automatically adapts to the device's color scheme. This guide explains how the theme system works and how to customize it.
+
+## Overview
+
+The theme system provides:
+
+- Automatic light/dark mode switching
+- Consistent color palette across the app
+- Platform-specific font configurations
+- Type-safe theme access
+- Custom color overrides
+
+## Color Scheme
+
+Colors are defined in `src/constants/theme.ts` with separate palettes for light and dark modes.
+
+### Color Definitions
+
+```typescript src/constants/theme.ts
+const tintColorLight = '#0a7ea4';
+const tintColorDark = '#fff';
+
+export const Colors = {
+  light: {
+    text: '#11181C',
+    background: '#fff',
+    tint: tintColorLight,
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: tintColorLight,
+  },
+  dark: {
+    text: '#ECEDEE',
+    background: '#151718',
+    tint: tintColorDark,
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: tintColorDark,
+  },
+};
+```
+
+### Available Color Keys
+
+<AccordionGroup>
+  <Accordion title="text" icon="font">
+    Primary text color
+    - Light: `#11181C` (dark gray)
+    - Dark: `#ECEDEE` (light gray)
+  </Accordion>
+  <Accordion title="background" icon="square">
+    Background color for views and containers
+    - Light: `#fff` (white)
+    - Dark: `#151718` (near black)
+  </Accordion>
+  <Accordion title="tint" icon="droplet">
+    Primary accent color for interactive elements
+    - Light: `#0a7ea4` (blue)
+    - Dark: `#fff` (white)
+  </Accordion>
+  <Accordion title="icon" icon="icons">
+    Default icon color
+    - Light: `#687076` (medium gray)
+    - Dark: `#9BA1A6` (light gray)
+  </Accordion>
+  <Accordion title="tabIconDefault" icon="bars">
+    Unselected tab icon color
+    - Light: `#687076`
+    - Dark: `#9BA1A6`
+  </Accordion>
+  <Accordion title="tabIconSelected" icon="check">
+    Selected tab icon color
+    - Light: `#0a7ea4`
+    - Dark: `#fff`
+  </Accordion>
+</AccordionGroup>
+
+## Customizing Colors
+
+### Adding New Color Keys
+
+To add new colors to the theme:
+
+<Steps>
+  <Step title="Update theme.ts">
+    Add your color to both light and dark palettes:
+
+    ```typescript src/constants/theme.ts
+    export const Colors = {
+      light: {
+        // ... existing colors
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+      },
+      dark: {
+        // ... existing colors
+        success: '#34d399',
+        error: '#f87171',
+        warning: '#fbbf24',
+      },
+    };
+    ```
+  </Step>
+  <Step title="Use in components">
+    Access your new colors with the `useThemeColor` hook:
+
+    ```tsx
+    import { useThemeColor } from '@/hooks/use-theme-color';
+
+    function SuccessMessage() {
+      const successColor = useThemeColor({}, 'success');
+      
+      return (
+        <View style={{ backgroundColor: successColor }}>
+          <Text>Success!</Text>
+        </View>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+### Overriding Default Colors
+
+You can override theme colors per-component:
+
+<CodeGroup>
+```tsx Themed Components
+import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/components/themed-text';
+
+<ThemedView
+  lightColor="#f0f9ff"
+  darkColor="#0c4a6e"
+  style={styles.container}
+>
+  <ThemedText
+    lightColor="#0369a1"
+    darkColor="#7dd3fc"
+  >
+    Custom colored text
+  </ThemedText>
+</ThemedView>
+```
+
+```tsx Custom Hook
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { View, Text } from 'react-native';
+
+function CustomComponent() {
+  const bgColor = useThemeColor(
+    { light: '#f0f9ff', dark: '#0c4a6e' },
+    'background'
+  );
+  
+  return (
+    <View style={{ backgroundColor: bgColor }}>
+      <Text>Content</Text>
+    </View>
+  );
+}
+```
+</CodeGroup>
+
+## Font System
+
+The font system provides platform-specific font families:
+
+```typescript src/constants/theme.ts
+import { Platform } from 'react-native';
+
+export const Fonts = Platform.select({
+  ios: {
+    sans: 'system-ui',
+    serif: 'ui-serif',
+    rounded: 'ui-rounded',
+    mono: 'ui-monospace',
+  },
+  default: {
+    sans: 'normal',
+    serif: 'serif',
+    rounded: 'normal',
+    mono: 'monospace',
+  },
+  web: {
+    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    serif: "Georgia, 'Times New Roman', serif",
+    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
+    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+  },
+});
+```
+
+### Using Fonts
+
+<Tabs>
+  <Tab title="With StyleSheet">
+    ```tsx
+    import { StyleSheet } from 'react-native';
+    import { Fonts } from '@/constants/theme';
+
+    const styles = StyleSheet.create({
+      title: {
+        fontFamily: Fonts.sans,
+        fontSize: 24,
+        fontWeight: 'bold',
+      },
+      code: {
+        fontFamily: Fonts.mono,
+        fontSize: 14,
+      },
+    });
+    ```
+  </Tab>
+  <Tab title="Inline Styles">
+    ```tsx
+    import { Text } from 'react-native';
+    import { Fonts } from '@/constants/theme';
+
+    <Text style={{ fontFamily: Fonts.rounded }}>
+      Rounded text
+    </Text>
+    ```
+  </Tab>
+</Tabs>
+
+## Theme Hooks
+
+### useColorScheme
+
+Detects the current color scheme:
+
+```tsx src/hooks/use-color-scheme.ts
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+function MyComponent() {
+  const colorScheme = useColorScheme(); // 'light' | 'dark' | null
+  
+  return (
+    <View>
+      <Text>Current theme: {colorScheme ?? 'light'}</Text>
+    </View>
+  );
+}
+```
+
+<Note>
+On web, this hook uses `window.matchMedia('(prefers-color-scheme: dark)')` to detect the color scheme. On native, it uses React Native's built-in `useColorScheme` hook.
+</Note>
+
+### useThemeColor
+
+Resolves colors based on the current theme:
+
+```tsx src/hooks/use-theme-color.ts
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+function MyComponent() {
+  // Get from theme
+  const textColor = useThemeColor({}, 'text');
+  
+  // With overrides
+  const bgColor = useThemeColor(
+    { light: '#f3f4f6', dark: '#1f2937' },
+    'background'
+  );
+  
+  return (
+    <View style={{ backgroundColor: bgColor }}>
+      <Text style={{ color: textColor }}>Themed content</Text>
+    </View>
+  );
+}
+```
+
+**Function signature:**
+```typescript
+function useThemeColor(
+  props: { light?: string; dark?: string },
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+): string
+```
+
+## Themed Components
+
+### ThemedText
+
+Automatically themed text with predefined styles:
+
+<CodeGroup>
+```tsx Usage
+import { ThemedText } from '@/components/themed-text';
+
+<ThemedText type="title">Large Title</ThemedText>
+<ThemedText type="subtitle">Section Heading</ThemedText>
+<ThemedText type="defaultSemiBold">Bold Text</ThemedText>
+<ThemedText type="link">Link Text</ThemedText>
+<ThemedText>Regular Text</ThemedText>
+```
+
+```tsx Implementation
+export type ThemedTextProps = TextProps & {
+  lightColor?: string;
+  darkColor?: string;
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+};
+
+export function ThemedText({
+  style,
+  lightColor,
+  darkColor,
+  type = 'default',
+  ...rest
+}: ThemedTextProps) {
+  const color = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'text'
+  );
+
+  return (
+    <Text
+      style={[{ color }, styles[type], style]}
+      {...rest}
+    />
+  );
+}
+```
+</CodeGroup>
+
+### ThemedView
+
+Automatically themed view container:
+
+```tsx
+import { ThemedView } from '@/components/themed-view';
+
+<ThemedView style={styles.container}>
+  {/* Content automatically gets themed background */}
+</ThemedView>
+
+// With custom colors
+<ThemedView
+  lightColor="#f9fafb"
+  darkColor="#111827"
+>
+  {/* Content */}
+</ThemedView>
+```
+
+## Theme Provider Setup
+
+The theme is configured in the root layout:
+
+```tsx src/app/_layout.tsx
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      {/* App content */}
+    </ThemeProvider>
+  );
+}
+```
+
+This setup ensures:
+- Navigation elements match the current theme
+- Theme changes propagate throughout the app
+- System preference changes are detected
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Semantic Names" icon="tag">
+    Name colors by purpose (e.g., `primary`, `danger`) rather than appearance (e.g., `blue`, `red`)
+  </Card>
+  <Card title="Test Both Themes" icon="sun">
+    Always test your UI in both light and dark modes to ensure readability
+  </Card>
+  <Card title="Consistent Contrast" icon="eye">
+    Maintain WCAG AA contrast ratios (4.5:1 for normal text)
+  </Card>
+  <Card title="Use Themed Components" icon="cube">
+    Prefer `ThemedText` and `ThemedView` over raw React Native components
+  </Card>
+</CardGroup>
+
+## Alternative Styling Solutions
+
+<Note>
+While NearYou uses a custom theme system, you can also use these popular alternatives:
+
+- [NativeWind](https://www.nativewind.dev/) - Tailwind CSS for React Native
+- [Tamagui](https://tamagui.dev/) - Universal UI kit with themes
+- [Unistyles](https://reactnativeunistyles.vercel.app) - Zero-runtime styling
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="cube" href="/development/components">
+    Explore themed components
+  </Card>
+  <Card title="Navigation" icon="compass" href="/development/navigation">
+    Configure app navigation
+  </Card>
+</CardGroup>

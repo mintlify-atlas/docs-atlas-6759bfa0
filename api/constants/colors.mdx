@@ -1,0 +1,179 @@
+---
+title: Colors
+description: Theme-aware color constants for light and dark modes
+---
+
+## Overview
+
+The `Colors` constant provides a comprehensive set of theme-aware colors for both light and dark modes. These colors are used throughout the app to ensure consistent theming and automatic adaptation to the user's color scheme preference.
+
+## Import
+
+```typescript
+import { Colors } from '@/constants/theme';
+```
+
+## Color Values
+
+### Light Mode
+
+<ResponseField name="text" type="string" default="#11181C">
+  Primary text color for light mode
+</ResponseField>
+
+<ResponseField name="background" type="string" default="#fff">
+  Background color for light mode
+</ResponseField>
+
+<ResponseField name="tint" type="string" default="#0a7ea4">
+  Tint/accent color for light mode (brand color)
+</ResponseField>
+
+<ResponseField name="icon" type="string" default="#687076">
+  Default icon color for light mode
+</ResponseField>
+
+<ResponseField name="tabIconDefault" type="string" default="#687076">
+  Inactive tab bar icon color for light mode
+</ResponseField>
+
+<ResponseField name="tabIconSelected" type="string" default="#0a7ea4">
+  Active tab bar icon color for light mode
+</ResponseField>
+
+### Dark Mode
+
+<ResponseField name="text" type="string" default="#ECEDEE">
+  Primary text color for dark mode
+</ResponseField>
+
+<ResponseField name="background" type="string" default="#151718">
+  Background color for dark mode
+</ResponseField>
+
+<ResponseField name="tint" type="string" default="#fff">
+  Tint/accent color for dark mode
+</ResponseField>
+
+<ResponseField name="icon" type="string" default="#9BA1A6">
+  Default icon color for dark mode
+</ResponseField>
+
+<ResponseField name="tabIconDefault" type="string" default="#9BA1A6">
+  Inactive tab bar icon color for dark mode
+</ResponseField>
+
+<ResponseField name="tabIconSelected" type="string" default="#fff">
+  Active tab bar icon color for dark mode
+</ResponseField>
+
+## Usage Examples
+
+### Direct Access
+
+Access colors directly based on the current color scheme:
+
+```typescript
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+function TabLayout() {
+  const colorScheme = useColorScheme();
+  
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerShown: false,
+      }}>
+      {/* Tab screens */}
+    </Tabs>
+  );
+}
+```
+
+### With useThemeColor Hook
+
+The recommended way to use colors is with the `useThemeColor` hook:
+
+```typescript
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+function ThemedView({ style, lightColor, darkColor, ...otherProps }) {
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    'background'
+  );
+  
+  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+```
+
+### In Styled Components
+
+Use colors in ThemedText and ThemedView components:
+
+```typescript
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+
+function MyComponent() {
+  return (
+    <ThemedView>
+      <ThemedText type="title">Welcome!</ThemedText>
+      <ThemedText>This text automatically adapts to the theme.</ThemedText>
+    </ThemedView>
+  );
+}
+```
+
+## Type Definition
+
+```typescript
+export const Colors: {
+  light: {
+    text: string;
+    background: string;
+    tint: string;
+    icon: string;
+    tabIconDefault: string;
+    tabIconSelected: string;
+  };
+  dark: {
+    text: string;
+    background: string;
+    tint: string;
+    icon: string;
+    tabIconDefault: string;
+    tabIconSelected: string;
+  };
+};
+```
+
+## Best Practices
+
+<Card title="Use Theme-Aware Hooks" icon="palette">
+  Always use `useThemeColor` hook instead of accessing `Colors` directly. This allows for runtime color overrides and proper theme switching.
+</Card>
+
+<Card title="Consistent Color Keys" icon="key">
+  Use the defined color keys (`text`, `background`, `tint`, etc.) consistently across your app for a unified design system.
+</Card>
+
+<Card title="Override When Needed" icon="paintbrush">
+  Pass `lightColor` and `darkColor` props to themed components when you need to override the default colors for specific use cases.
+</Card>
+
+## Alternative Styling Solutions
+
+The colors constant is just one approach to theming. You can also use:
+
+- [Nativewind](https://www.nativewind.dev/) - Tailwind CSS for React Native
+- [Tamagui](https://tamagui.dev/) - Universal UI kit
+- [unistyles](https://reactnativeunistyles.vercel.app) - Cross-platform styling library
+
+## Related
+
+- [Fonts](/api/constants/theme) - Platform-specific font families
+- [useThemeColor](/api/hooks/use-theme-color) - Hook for accessing theme colors
+- [useColorScheme](/api/hooks/use-color-scheme) - Hook for detecting color scheme

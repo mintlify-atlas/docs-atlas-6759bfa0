@@ -1,0 +1,159 @@
+---
+title: Collapsible
+description: An expandable/collapsible section with a clickable header and animated chevron icon
+---
+
+## Overview
+
+`Collapsible` is a UI component that creates expandable sections with a title and content. It features a chevron icon that rotates when toggled and smooth expand/collapse interactions.
+
+## Import
+
+```tsx
+import { Collapsible } from '@/components/ui/collapsible';
+```
+
+## Props
+
+<ParamField path="title" type="string" required>
+  The text to display in the collapsible header. Rendered in semi-bold style.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  The content to display when the collapsible is expanded. Hidden when collapsed.
+</ParamField>
+
+## Usage Examples
+
+### Basic Usage
+
+```tsx
+import { Collapsible } from '@/components/ui/collapsible';
+import { ThemedText } from '@/components/themed-text';
+
+export default function ExploreScreen() {
+  return (
+    <Collapsible title="File-based routing">
+      <ThemedText>
+        This app has two screens:{' '}
+        <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+        <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+      </ThemedText>
+      <ThemedText>
+        The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
+        sets up the tab navigator.
+      </ThemedText>
+    </Collapsible>
+  );
+}
+```
+
+### Multiple Collapsible Sections
+
+```tsx
+import { Collapsible } from '@/components/ui/collapsible';
+import { ThemedText } from '@/components/themed-text';
+import { ExternalLink } from '@/components/external-link';
+
+export default function ExploreScreen() {
+  return (
+    <>
+      <Collapsible title="File-based routing">
+        <ThemedText>
+          This app has two screens:{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+        </ThemedText>
+        <ExternalLink href="https://docs.expo.dev/router/introduction">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
+      </Collapsible>
+      
+      <Collapsible title="Android, iOS, and web support">
+        <ThemedText>
+          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
+          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+        </ThemedText>
+      </Collapsible>
+      
+      <Collapsible title="Light and dark mode components">
+        <ThemedText>
+          This template has light and dark mode support. The{' '}
+          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
+          what the user's current color scheme is, and so you can adjust UI colors accordingly.
+        </ThemedText>
+      </Collapsible>
+    </>
+  );
+}
+```
+
+### With Images and Links
+
+```tsx
+import { Image } from 'expo-image';
+import { Collapsible } from '@/components/ui/collapsible';
+import { ThemedText } from '@/components/themed-text';
+import { ExternalLink } from '@/components/external-link';
+
+export default function Example() {
+  return (
+    <Collapsible title="Images">
+      <ThemedText>
+        For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
+        <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
+        different screen densities
+      </ThemedText>
+      <Image
+        source={require('@assets/images/react-logo.png')}
+        style={{ width: 100, height: 100, alignSelf: 'center' }}
+      />
+      <ExternalLink href="https://reactnative.dev/docs/images">
+        <ThemedText type="link">Learn more</ThemedText>
+      </ExternalLink>
+    </Collapsible>
+  );
+}
+```
+
+## Visual Behavior
+
+- **Collapsed State**: Shows only the title with a right-pointing chevron icon
+- **Expanded State**: Shows the title with a down-pointing chevron (90° rotation) and displays content below
+- **Animation**: Chevron rotates smoothly between collapsed (0°) and expanded (90°) states
+- **Interaction**: Tapping anywhere on the header toggles the expand/collapse state with 0.8 opacity feedback
+
+## Styling
+
+### Header
+- Horizontal layout with chevron and title
+- 6px gap between chevron and title
+- Title displayed in `defaultSemiBold` ThemedText style
+
+### Content
+- 6px top margin when expanded
+- 24px left margin for indentation
+- Inherits theme colors from ThemedView wrapper
+
+### Icon
+- 18px size
+- Medium weight SF Symbol chevron
+- Color adapts to current theme (light/dark)
+
+## Implementation Details
+
+- Uses React `useState` hook to manage open/closed state
+- Chevron icon uses SF Symbols via `IconSymbol` component
+- Theme-aware using `useColorScheme` hook
+- All sections are independent - opening one doesn't close others
+
+## Type Definition
+
+```tsx
+export function Collapsible({ 
+  children, 
+  title 
+}: PropsWithChildren & { 
+  title: string 
+}): JSX.Element;
+```

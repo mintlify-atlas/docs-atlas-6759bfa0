@@ -1,0 +1,135 @@
+---
+title: useColorScheme
+description: Hook for detecting the user's color scheme preference (light or dark mode)
+---
+
+## Overview
+
+The `useColorScheme` hook detects the user's color scheme preference and returns either `'light'`, `'dark'`, or `null`. On web platforms, it handles hydration to support static rendering by defaulting to `'light'` until the client-side hydration is complete.
+
+## Import
+
+```typescript
+import { useColorScheme } from '@/hooks/use-color-scheme';
+```
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+export function MyComponent() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <View style={{ backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }}>
+      <Text>Current theme: {colorScheme}</Text>
+    </View>
+  );
+}
+```
+
+### With Theme Provider
+
+From `src/app/_layout.tsx`:
+
+```tsx
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      {/* Your app navigation */}
+    </ThemeProvider>
+  );
+}
+```
+
+### Conditional Styling
+
+From `src/components/ui/collapsible.tsx`:
+
+```tsx
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
+
+export function Collapsible({ children, title }) {
+  const theme = useColorScheme() ?? 'light';
+
+  return (
+    <View>
+      <IconSymbol
+        name="chevron.right"
+        color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+      />
+      <Text>{title}</Text>
+    </View>
+  );
+}
+```
+
+## Return Value
+
+Returns the user's color scheme preference:
+
+- `'light'` - Light mode is preferred
+- `'dark'` - Dark mode is preferred
+- `null` - No preference detected (native platforms only)
+
+**Note:** On web platforms, this hook always returns `'light'` during server-side rendering and updates to the actual preference after client-side hydration.
+
+## Platform Behavior
+
+### Native (iOS/Android)
+
+Directly uses React Native's built-in `useColorScheme` hook, which detects the system color scheme preference.
+
+### Web
+
+Implements special handling for static rendering:
+1. Returns `'light'` initially (before hydration)
+2. After hydration completes, returns the actual color scheme from React Native's hook
+3. This ensures consistent rendering between server and client
+
+## Type Definition
+
+```typescript
+type ColorSchemeName = 'light' | 'dark' | null;
+
+function useColorScheme(): ColorSchemeName;
+```
+
+## Best Practices
+
+### Use Null Coalescing
+
+Since the hook can return `null`, use the null coalescing operator to provide a default:
+
+```tsx
+const theme = useColorScheme() ?? 'light';
+```
+
+### Combine with Theme Constants
+
+Use with your theme constants for consistent styling:
+
+```tsx
+import { Colors } from '@/constants/theme';
+
+const theme = useColorScheme() ?? 'light';
+const backgroundColor = Colors[theme].background;
+const textColor = Colors[theme].text;
+```
+
+### Consider Using useThemeColor
+
+For color-specific use cases, consider using the [`useThemeColor`](/api/hooks/use-theme-color) hook instead, which provides automatic color resolution based on the theme.
+
+## Related Hooks
+
+- [`useThemeColor`](/api/hooks/use-theme-color) - Get theme-aware colors automatically
