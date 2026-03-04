@@ -1,0 +1,97 @@
+{
+  "projectType": "saas",
+  "projectName": "NearYou",
+  "projectDescription": "A mobile app built with Expo and React Native for discovering nearby places of interest, earning points, and exploring your city.",
+  "theme": "almond",
+  "primaryColor": "#0a7ea4",
+  "lightColor": "#E6F4FE",
+  "darkColor": "#1D3D47",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/place-discovery",
+              "features/points-system",
+              "features/exploration"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "development/project-structure",
+              "development/theming",
+              "development/navigation",
+              "development/components"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/configuration",
+              "guides/building",
+              "guides/deployment"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Components",
+            "pages": [
+              "api/components/themed-view",
+              "api/components/themed-text",
+              "api/components/parallax-scroll-view",
+              "api/components/collapsible"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "pages": [
+              "api/hooks/use-color-scheme",
+              "api/hooks/use-theme-color"
+            ]
+          },
+          {
+            "group": "Constants",
+            "pages": [
+              "api/constants/theme",
+              "api/constants/colors"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Discover nearby places of interest with location-based exploration",
+    "Earn points and rewards for exploring new locations",
+    "Cross-platform support for iOS, Android, and Web",
+    "Beautiful theming with light and dark mode support",
+    "Tab-based navigation with file-based routing",
+    "Reusable themed components and UI elements"
+  ],
+  "publicApiSurface": [
+    "ThemedView - Theme-aware view component",
+    "ThemedText - Theme-aware text component with variants",
+    "ParallaxScrollView - Scrollable view with parallax header effect",
+    "Collapsible - Expandable/collapsible content container",
+    "useColorScheme() - Hook for detecting light/dark mode",
+    "useThemeColor() - Hook for accessing theme colors",
+    "Colors - Theme color constants",
+    "Fonts - Platform-specific font constants"
+  ]
+}
