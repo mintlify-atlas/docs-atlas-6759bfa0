@@ -1,0 +1,103 @@
+---
+title: ExternalLink
+description: Link component that opens URLs in an in-app browser on mobile
+---
+
+## Overview
+
+The `ExternalLink` component wraps Expo Router's `Link` component to provide a better user experience when opening external URLs. On native platforms (iOS/Android), it opens links in an in-app browser using `expo-web-browser`, keeping users within your app. On web, it behaves like a standard external link.
+
+## Import
+
+```typescript
+import { ExternalLink } from '@/components/external-link';
+```
+
+## Props
+
+Extends all props from Expo Router's `Link` component, except `href` is required and must be a string URL.
+
+<ParamField path="href" type="string" required>
+  The URL to open. Must be a valid external URL (e.g., `https://example.com`).
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  The content to render inside the link (typically text or an icon).
+</ParamField>
+
+<ParamField path="...rest" type="ComponentProps<typeof Link>">
+  All other props from Expo Router's Link component are supported.
+</ParamField>
+
+## Usage
+
+### Basic External Link
+
+```tsx
+import { ExternalLink } from '@/components/external-link';
+import { ThemedText } from '@/components/themed-text';
+
+<ExternalLink href="https://docs.expo.dev/router/introduction">
+  <ThemedText type="link">Learn more</ThemedText>
+</ExternalLink>
+```
+
+This example is taken from `src/app/(tabs)/explore.tsx`:
+
+```tsx
+<Collapsible title="File-based routing">
+  <ThemedText>
+    This app has two screens:{' '}
+    <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+    <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+  </ThemedText>
+  <ExternalLink href="https://docs.expo.dev/router/introduction">
+    <ThemedText type="link">Learn more</ThemedText>
+  </ExternalLink>
+</Collapsible>
+```
+
+## Platform Behavior
+
+### iOS and Android
+
+On native platforms, the component:
+- Prevents the default browser opening behavior
+- Opens the URL in an in-app browser using `expo-web-browser`
+- Uses `WebBrowserPresentationStyle.AUTOMATIC` for a native feel
+- Keeps users within your app context
+
+### Web
+
+On web, the component:
+- Opens the link in a new tab (via `target="_blank"`)
+- Behaves like a standard HTML anchor tag
+
+## Implementation Details
+
+The component uses the `EXPO_OS` environment variable to detect the platform and conditionally applies the in-app browser behavior:
+
+```typescript
+export function ExternalLink({ href, ...rest }: Props) {
+  return (
+    <Link
+      target="_blank"
+      {...rest}
+      href={href}
+      onPress={async (event) => {
+        if (process.env.EXPO_OS !== 'web') {
+          event.preventDefault();
+          await openBrowserAsync(href, {
+            presentationStyle: WebBrowserPresentationStyle.AUTOMATIC,
+          });
+        }
+      }}
+    />
+  );
+}
+```
+
+## Related
+
+- [Link (Expo Router)](https://docs.expo.dev/router/navigating-pages/) - Base Link component
+- [expo-web-browser](https://docs.expo.dev/versions/latest/sdk/webbrowser/) - In-app browser API

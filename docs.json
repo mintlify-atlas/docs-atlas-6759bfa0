@@ -67,7 +67,11 @@
               "api/components/themed-view",
               "api/components/themed-text",
               "api/components/parallax-scroll-view",
-              "api/components/collapsible"
+              "api/components/collapsible",
+              "api/components/external-link",
+              "api/components/haptic-tab",
+              "api/components/hello-wave",
+              "api/components/icon-symbol"
             ]
           },
           {

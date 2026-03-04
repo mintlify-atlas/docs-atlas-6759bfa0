@@ -1,13 +1,36 @@
 ---
 title: Exploration Features
-description: Interactive features that enhance your local exploration experience
+description: Planned interactive features to enhance local exploration experience
 ---
 
-NearYou provides a rich set of exploration features designed to make discovering your city fun, engaging, and rewarding. From interactive maps to personalized recommendations, every feature is built to enhance your adventure.
+NearYou will provide a rich set of exploration features designed to make discovering your city fun, engaging, and rewarding. This document outlines the planned exploration experience.
 
-## Core Exploration Experience
+<Warning>
+Most exploration features are currently in the planning phase. The current app provides the foundation with navigation structure, themed UI components, and cross-platform support.
+</Warning>
 
-NearYou transforms everyday movement through your city into an exciting exploration adventure.
+## Current Implementation
+
+**What's working now:**
+
+<CardGroup cols={2}>
+  <Card title="Tab Navigation" icon="bars">
+    File-based routing with Home and Explore tabs using Expo Router
+  </Card>
+  <Card title="Themed UI" icon="palette">
+    Light and dark mode support with themed components
+  </Card>
+  <Card title="Cross-Platform" icon="mobile">
+    Runs on iOS, Android, and Web with consistent experience
+  </Card>
+  <Card title="Smooth Animations" icon="wand-magic-sparkles">
+    React Native Reanimated for 60fps animations
+  </Card>
+</CardGroup>
+
+## Planned Core Features
+
+The following features are planned for future development:
 
 <CardGroup cols={2}>
   <Card title="Real-Time Discovery" icon="bolt">
@@ -24,193 +47,152 @@ NearYou transforms everyday movement through your city into an exciting explorat
   </Card>
 </CardGroup>
 
-## Navigation & Interface
+## Planned Navigation & Interface
 
-NearYou features an intuitive tab-based navigation built with Expo Router:
+NearYou's tab-based navigation is ready for the following planned features:
 
-### Home Tab
+### Home Tab (Planned)
 
-Your exploration dashboard featuring:
+Your exploration dashboard will feature:
 
 - **Nearby Places**: Discover locations close to your current position
 - **Quick Stats**: See your points, level, and recent achievements at a glance
 - **Daily Suggestions**: Get personalized place recommendations
 - **Active Challenges**: View and track your current exploration goals
 
-### Explore Tab
+**Current status**: Basic welcome screen with example content from Expo Router template
 
-Dive deeper into exploration with:
+### Explore Tab (Planned)
+
+Planned deep exploration features:
 
 - **Interactive Map**: Browse all discovered and undiscovered places
-- **Category Filters**: Find specific types of places (coming soon)
+- **Category Filters**: Find specific types of places
 - **Distance Controls**: Adjust your exploration radius
 - **Search Function**: Look for specific places by name or type
 
+**Current status**: Template explore screen with collapsible information sections
+
 <Note>
-The app uses file-based routing with Expo Router, providing smooth navigation and deep linking support across iOS, Android, and web platforms.
+The app uses file-based routing with Expo Router, providing smooth navigation and deep linking support across iOS, Android, and web platforms. This foundation is ready for implementing the planned exploration features.
 </Note>
 
-## Check-In System
+## Planned Check-In Experience
 
-When you visit a discovered place, use the check-in feature to:
+Users will be able to check in at places:
 
 <Steps>
-  <Step title="Automatic Detection">
-    The app detects when you're near a discovered place and prompts you to check in.
+  <Step title="Arrive at Location">
+    Navigate to a discovered place using your preferred map app.
   </Step>
 
-  <Step title="Confirm Your Visit">
-    Tap the check-in button to confirm you're at the location. The app verifies your position to ensure accurate tracking.
+  <Step title="Open Check-In">
+    Tap the check-in button when you're within range of the location.
   </Step>
 
-  <Step title="Earn Your Reward">
-    Receive points immediately upon successful check-in. First-time visits earn bonus points!
+  <Step title="Verify Location">
+    The app will verify your GPS coordinates to confirm you're at the place.
+    
+    <Info>
+    Location verification happens locally on your device for privacy.
+    </Info>
   </Step>
 
-  <Step title="Track Your History">
-    Your visit is recorded in your exploration history, contributing to achievements and statistics.
+  <Step title="Earn Points">
+    Receive points and see any unlocked achievements immediately after check-in.
   </Step>
 </Steps>
 
-## Interactive Features
+## Current Technical Features
 
-### Haptic Feedback
+These features are already implemented:
 
-NearYou uses haptic feedback to create a more engaging experience:
+### Theming & Customization
 
-- Subtle vibrations when discovering a new place
-- Tactile confirmation when checking in
-- Feedback when earning points or unlocking achievements
-- Enhanced tab navigation with haptic touch
+From `src/constants/theme.ts`:
 
 ```typescript
-import * as Haptics from 'expo-haptics';
-
-// Example: Haptic feedback on check-in
-await Haptics.notificationAsync(
-  Haptics.NotificationFeedbackType.Success
-);
+export const Colors = {
+  light: {
+    text: '#11181C',
+    background: '#fff',
+    tint: '#0a7ea4',
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: '#0a7ea4',
+  },
+  dark: {
+    text: '#ECEDEE',
+    background: '#151718',
+    tint: '#fff',
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: '#fff',
+  },
+};
 ```
+
+The app automatically switches between light and dark themes based on system preferences.
+
+### Platform Support
+
+Current cross-platform support:
+
+| Platform | Status | Features |
+|----------|--------|----------|
+| **iOS** | ✅ Supported | Native SF Symbols, haptic feedback, smooth animations |
+| **Android** | ✅ Supported | Material Icons, edge-to-edge UI, adaptive icons |
+| **Web** | ✅ Supported | Static export, responsive design, PWA-ready |
 
 ### Smooth Animations
 
-Built with React Native Reanimated for fluid interactions:
-
-- Parallax scroll effects on content pages
-- Smooth transitions between screens
-- Animated map markers and overlays
-- Gesture-based interactions
-
-<Info>
-NearYou uses `react-native-reanimated` and `react-native-gesture-handler` to deliver 60fps animations and natural gesture recognition.
-</Info>
-
-## Theming & Customization
-
-Explore in style with adaptive theming:
-
-### Light & Dark Mode
-
-The app automatically adapts to your device's appearance settings:
-
-- **Light Mode**: Clean, bright interface perfect for daytime exploration
-- **Dark Mode**: Eye-friendly dark theme for evening adventures
-- **Automatic Switching**: Seamlessly transitions based on system preferences
-
-### Themed Components
-
-All UI elements use theme-aware components:
-
-- `ThemedView`: Automatically adjusts background colors
-- `ThemedText`: Dynamic text colors for optimal readability
-- Custom color schemes for maps and overlays
+Using React Native Reanimated 4.1:
 
 ```tsx
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
+import Animated from 'react-native-reanimated';
 
-<ThemedView style={styles.container}>
-  <ThemedText type="title">Discover Places Near You</ThemedText>
-</ThemedView>
+// Example from HelloWave component
+<Animated.Text
+  style={{
+    fontSize: 28,
+    animationName: {
+      '50%': { transform: [{ rotate: '25deg' }] },
+    },
+    animationIterationCount: 4,
+    animationDuration: '300ms',
+  }}>
+  👋
+</Animated.Text>
 ```
 
-## Cross-Platform Experience
+All animations run on the native thread for 60fps performance.
 
-NearYou delivers a consistent exploration experience across all platforms:
+## Planned Privacy & Data
 
-| Platform | Features | Performance |
-|----------|----------|-------------|
-| **iOS** | Full feature set with native SF Symbols | 60fps animations |
-| **Android** | Complete functionality with Material icons | Optimized for all devices |
-| **Web** | Progressive web app with responsive design | Desktop & mobile browsers |
+When location features are implemented:
 
-<Note>
-The app is built with Expo SDK 54 and React Native 0.81, utilizing the new architecture for improved performance and smaller bundle sizes.
-</Note>
+- **Location Privacy**: All location processing happens on-device
+- **Data Minimization**: Only essential data collected
+- **User Control**: Granular permissions for location access
+- **Offline Support**: Core features work without internet connection
+- **No Tracking**: Location not tracked when app is closed
 
-## Offline Support
+## Upcoming Roadmap
 
-Explore even without connectivity:
+According to the README's "Next Features" section:
 
-- Previously discovered places remain accessible offline
-- Check-ins are queued and synced when connection is restored
-- Map data is cached for recently viewed areas
-- Your exploration history is stored locally
-
-<Warning>
-Active place discovery requires an internet connection to fetch new locations and verify check-ins.
-</Warning>
-
-## Privacy & Data
-
-Your exploration data is yours:
-
-- All exploration history is stored locally on your device
-- Location data is only used for place discovery and check-ins
-- No tracking when the app is closed
-- Export your data at any time from settings
-- Delete your exploration history whenever you want
-
-## Best Practices for Explorers
-
-Get the most out of your exploration experience:
-
-<AccordionGroup>
-  <Accordion title="Optimize Battery Life" icon="battery-full">
-    - Use location services only when actively exploring
-    - Enable low-power mode for extended exploration sessions
-    - Close the app when not in use to save battery
-  </Accordion>
-
-  <Accordion title="Discover Efficiently" icon="route">
-    - Plan routes that include multiple nearby places
-    - Check your map before heading out
-    - Focus on categories you enjoy to maximize engagement
-  </Accordion>
-
-  <Accordion title="Track Your Progress" icon="chart-simple">
-    - Review your statistics regularly to spot patterns
-    - Set personal exploration goals
-    - Try exploring new neighborhoods each week
-  </Accordion>
-
-  <Accordion title="Stay Safe" icon="shield">
-    - Always be aware of your surroundings while exploring
-    - Visit places during appropriate hours
-    - Share your exploration plans with friends or family
-  </Accordion>
-</AccordionGroup>
-
-## Upcoming Features
-
-We're constantly improving the exploration experience:
-
-- 🗺️ **Advanced Filters**: Filter places by type, rating, and distance
-- 💬 **User Reviews**: Read and write reviews for places you've visited
-- 📸 **Photo Gallery**: Share photos from your explorations
-- 👥 **Social Features**: Connect with friends and explore together
-- 🌐 **Multi-Language**: Support for Spanish and English (and more!)
+- 🗺️ **Advanced Filters**: Filter places by category and type
 - 🏆 **Achievement System**: Expanded badges and milestone tracking
+- 💬 **Reviews & Ratings**: User-generated content for places
+- 🌐 **Multi-Language**: Support for Spanish and English (and more)
+
+## Getting Involved
+
+This is an open-source project! Help implement exploration features:
+
+1. Review the [Development Guide](/development/project-structure)
+2. Check [GitHub Issues](https://github.com/edgarconrado/nearyou/issues)
+3. See the [Contributing Guide](https://github.com/edgarconrado/nearyou/blob/main/CONTRIBUTING.md) if available
 
 <CardGroup cols={2}>
   <Card title="View API Reference" icon="code" href="/api/components/themed-view">

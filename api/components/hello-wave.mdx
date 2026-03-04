@@ -1,0 +1,100 @@
+---
+title: HelloWave
+description: Animated waving hand emoji component
+---
+
+## Overview
+
+The `HelloWave` component is a simple animated emoji component that displays a waving hand (👋) with a rotating animation. It's used as a friendly greeting element in the home screen to add personality and motion to the UI.
+
+## Import
+
+```typescript
+import { HelloWave } from '@/components/hello-wave';
+```
+
+## Props
+
+This component does not accept any props.
+
+## Usage
+
+### In Home Screen
+
+From `src/app/(tabs)/index.tsx`:
+
+```tsx
+import { HelloWave } from '@/components/hello-wave';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+
+<ThemedView style={styles.titleContainer}>
+  <ThemedText type="title">Welcome!</ThemedText>
+  <HelloWave />
+</ThemedView>
+```
+
+The component appears next to the "Welcome!" title on the home screen, providing a friendly animated greeting.
+
+## Animation Behavior
+
+The component uses React Native Reanimated to create a waving motion:
+
+- **Animation**: Rotates between 0° and 25°
+- **Duration**: 300ms per iteration
+- **Iterations**: 4 complete waves
+- **Timing**: Animates to 25° rotation at 50% progress, then back to 0°
+
+The animation runs automatically when the component mounts and plays through 4 complete wave cycles.
+
+## Implementation Details
+
+```typescript
+import Animated from 'react-native-reanimated';
+
+export function HelloWave() {
+  return (
+    <Animated.Text
+      style={{
+        fontSize: 28,
+        lineHeight: 32,
+        marginTop: -6,
+        animationName: {
+          '50%': { transform: [{ rotate: '25deg' }] },
+        },
+        animationIterationCount: 4,
+        animationDuration: '300ms',
+      }}>
+      👋
+    </Animated.Text>
+  );
+}
+```
+
+## Styling
+
+The component has built-in styling:
+
+- **Font size**: 28 pixels
+- **Line height**: 32 pixels
+- **Margin top**: -6 pixels (for vertical alignment)
+
+These styles ensure the emoji aligns properly with adjacent text elements.
+
+## Performance
+
+The animation uses React Native Reanimated, which runs animations on the native thread for smooth 60fps performance without blocking the JavaScript thread. This ensures the waving animation is fluid even on lower-end devices.
+
+## Customization
+
+While the component doesn't accept props, you can customize it by:
+
+1. **Changing the emoji**: Replace `👋` with any other emoji
+2. **Adjusting animation speed**: Modify `animationDuration`
+3. **Changing rotation angle**: Adjust the `rotate` value in the animation keyframes
+4. **Modifying iteration count**: Change `animationIterationCount` for more or fewer waves
+
+## Related
+
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) - Animation library documentation
+- [ThemedText](/api/components/themed-text) - Text component used alongside HelloWave
